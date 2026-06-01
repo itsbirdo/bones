@@ -53,6 +53,20 @@ namespace Bones.Core
             return desired;
         }
 
+        /// <summary>
+        /// Clamp a stake to the smaller of the bankroll cap and an extra cap (e.g. the night's tribute),
+        /// never below the minimum. The min stake always wins: even if both caps fall below it (a near-broke
+        /// player, a tiny tribute) the result is MinStake, so the stepper never produces an illegal stake.
+        /// </summary>
+        public static int ClampStake(int desired, int bankroll, int extraCap)
+        {
+            int max = Math.Min(MaxStake(bankroll), Math.Max(0, extraCap));
+            if (max < MinStake) max = MinStake;
+            if (desired < MinStake) return MinStake;
+            if (desired > max) return max;
+            return desired;
+        }
+
         /// <summary>You survive the night's Collection if the bankroll covers the demand.</summary>
         public static bool CanMeetCollection(int bankroll, int demand) => bankroll >= demand;
     }

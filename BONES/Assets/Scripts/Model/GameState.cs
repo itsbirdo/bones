@@ -47,11 +47,24 @@ namespace Bones.Model
         public int consecutiveWins;            // drives Heat = 1 + 0.5 × this
         public bool layingLowThisGame;
 
+        // The Reckoning (spec §6.5): best-of-three vs Vito. Reset each night; only used on the
+        // Reckoning night. reckoningWins/Losses track the match score across the 3 games.
+        public int reckoningWins;
+        public int reckoningLosses;
+
         public void ResetForNewNight()
         {
             gamesPlayed = 0;
             consecutiveWins = 0;
             layingLowThisGame = false;
+            reckoningWins = 0;
+            reckoningLosses = 0;
+        }
+
+        public void OnReckoningGame(bool playerWon)
+        {
+            if (playerWon) reckoningWins++;
+            else reckoningLosses++;
         }
 
         public void OnWin() => consecutiveWins++;
@@ -69,6 +82,12 @@ namespace Bones.Model
         public int busts;
         public int biggestPot;
         public bool fenceUnlocked;             // hidden until the first game resolves
+
+        // Lifetime counters that drive achievement triggers (see Bones.Core.AchievementService).
+        public int gamesWon;                   // total clean (non-busted) wins across all runs
+        public int fourFiveSixCount;           // total 4-5-6 hands the banker has rolled
+        public int tripleCount;                // total triples the banker has rolled
+        public int highestNightReached;        // deepest 1-based night number ever reached
 
         public bool IsUnlocked(string id) => unlockedIds.Contains(id);
 

@@ -8,7 +8,7 @@ namespace Bones.Editor
 {
     /// <summary>
     /// One-click generator for the MVP content set so you never hand-author ScriptableObjects.
-    /// Menu: BONES ▸ Generate MVP Data. Creates dice, an item, Nights 1–3, juice tiers, the
+    /// Menu: BONES ▸ Generate MVP Data. Creates dice, an item, Nights 1–7 (Night 7 = the Reckoning), juice tiers, the
     /// campaign, and the wired GameDatabase under Assets/Data.
     /// </summary>
     public static class DataBootstrap
@@ -167,13 +167,20 @@ namespace Bones.Editor
             // --- Juice tiers ---
             var juice = MakeJuice();
 
-            // --- Nights 1–3 (Squeeze: tie drifts banker -> push -> mark; mark starts loading) ---
+            // --- Nights 1–7 (the Squeeze: tie drifts banker -> push -> mark; mark loads harder each
+            //     late night; Night 7 is the Reckoning vs Vito — no tribute, Suspicion off). Spec §6.3–6.5,
+            //     ECONOMY.md §5. All numbers are tuning placeholders matching the docs. ---
             var n1 = MakeNight("Night_1", 1, 20, TieRule.Banker, 0.00f);
             var n2 = MakeNight("Night_2", 2, 55, TieRule.Push, 0.00f);
             var n3 = MakeNight("Night_3", 3, 140, TieRule.Mark, 0.12f);
+            var n4 = MakeNight("Night_4", 4, 375, TieRule.Mark, 0.30f);
+            var n5 = MakeNight("Night_5", 5, 950, TieRule.Mark, 0.50f);
+            var n6 = MakeNight("Night_6", 6, 2400, TieRule.Mark, 0.65f);
+            // The Reckoning: no ordinary collection (demand 0); Vito heavily loaded; flagged isReckoning.
+            var n7 = MakeNight("Night_7", 7, 0, TieRule.Mark, 0.80f, true);
 
             var campaign = ScriptableObject.CreateInstance<CampaignConfig>();
-            campaign.nights = new[] { n1, n2, n3 };
+            campaign.nights = new[] { n1, n2, n3, n4, n5, n6, n7 };
             CreateAsset(campaign, "Assets/Data/Campaign.asset");
 
             // --- The wired database ---
@@ -203,14 +210,23 @@ namespace Bones.Editor
             });
             db.campaign = campaign;
             db.juice = juice;
-            // ONLY fully-implemented, balanced-to-test items: the 5 original unlocks plus the new
-            // clean maps (Shaved Edge, The Sequencer, The Magnet, Hot Hand, Greased Palm, Cooler Head).
-            // Deferred (stubbed) items stay out until their systems + achievement unlocks land.
+            db.showMetersInDev = true; // dev aid: Heat/Suspicion meters visible; flip OFF for release
+
+            // Brand-new-account starting core ONLY (ACHIEVEMENTS.md "Starting core pool"): two
+            // intuitive cheat dice plus one charm. Everything else implemented is earned through play
+            // via Bones.Core.AchievementService (see AchievementService.ActiveTable):
+            //   streak_charm  <- win your first game
+            //   hot_hand      <- win 3 games
+            //   headcracker   <- first 4-5-6
+            //   the_magnet    <- first triple
+            //   greased_palm  <- survive your first night
+            //   shaved_edge   <- reach Night 3
+            //   the_sequencer <- reach Night 5
+            //   cooler_head   <- get busted
+            // Deferred (stubbed) items stay out of both lists until their systems exist.
             db.startingUnlocks = new System.Collections.Generic.List<string>
             {
-                "snake_killer", "lucky_six", "gilded_die", "streak_charm", "headcracker",
-                "shaved_edge", "the_sequencer", "the_magnet", "hot_hand",
-                "greased_palm", "cooler_head",
+                "snake_killer", "lucky_six", "gilded_die",
             };
             EnsureDir("Assets/Resources");
             CreateAsset(db, "Assets/Resources/GameDatabase.asset"); // in Resources so GameController can auto-load it
@@ -226,9 +242,9 @@ namespace Bones.Editor
                 "MVP data generated under Assets/Data:\n" +
                 "• 26 dice total (1 bone + 25 catalog dice: loaded, control, charm, curse)\n" +
                 "• 15 items total (5 favors + 10 trinkets)\n" +
-                "• 11 starting unlocks (fully-implemented dice + favors); the rest are stubbed,\n" +
-                "  awaiting their systems + achievement unlocks (see CATALOG.md)\n" +
-                "• Nights 1–3 + Campaign\n" +
+                "• 3 starting unlocks (Snake Killer, Lucky Six, Gilded Die); other implemented\n" +
+                "  items are earned via achievements; stubbed items await their systems (see CATALOG.md)\n" +
+                "• Nights 1–7 (Night 7 = the Reckoning) + Campaign\n" +
                 "• JuiceTiers + GameDatabase (wired)\n\n" +
                 "Next: BONES ▸ Build Playable Scene.", "OK");
         }
@@ -253,11 +269,12 @@ namespace Bones.Editor
             return i;
         }
 
-        private static NightConfig MakeNight(string asset, int number, int demand, TieRule tie, float loading)
+        private static NightConfig MakeNight(string asset, int number, int demand, TieRule tie, float loading,
+            bool isReckoning = false)
         {
             var n = ScriptableObject.CreateInstance<NightConfig>();
             n.nightNumber = number; n.collectionDemand = demand; n.tieRule = tie;
-            n.opponentLoading = loading; n.gamesThisNight = 3;
+            n.opponentLoading = loading; n.gamesThisNight = 3; n.isReckoning = isReckoning;
             CreateAsset(n, $"{NightsDir}/{asset}.asset");
             return n;
         }

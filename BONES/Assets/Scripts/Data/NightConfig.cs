@@ -21,11 +21,11 @@ namespace Bones.Data
 
         [Header("Flow")]
         public int gamesThisNight = 3;
-        [Tooltip("The final night: 3 games vs Vito, win 2 of 3, Suspicion off (spec §6.5). Stubbed in MVP.")]
+        [Tooltip("The final night: 3 games vs Vito, win 2 of 3, Suspicion off, no tribute (spec §6.5).")]
         public bool isReckoning = false;
     }
 
-    /// <summary>Ordered list of nights = the campaign. MVP ships Nights 1–3.</summary>
+    /// <summary>Ordered list of nights = the campaign. Ships Nights 1–7 (Night 7 = the Reckoning).</summary>
     [CreateAssetMenu(menuName = "BONES/Campaign", fileName = "Campaign")]
     public class CampaignConfig : ScriptableObject
     {

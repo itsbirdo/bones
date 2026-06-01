@@ -57,6 +57,27 @@ namespace Bones.Tests
         }
 
         [Test]
+        public void ClampStake_WithExtraCap_TakesSmallerOfBankrollAndCap()
+        {
+            // Tribute caps below bankroll: the tribute wins.
+            Assert.AreEqual(20, EconomyService.ClampStake(50, 100, 20));
+            // Bankroll caps below tribute: the bankroll wins.
+            Assert.AreEqual(15, EconomyService.ClampStake(50, 15, 20));
+            // Desired sits under both caps: unchanged.
+            Assert.AreEqual(7, EconomyService.ClampStake(7, 100, 20));
+        }
+
+        [Test]
+        public void ClampStake_WithExtraCap_NeverBelowMinStake()
+        {
+            // Below min is always raised to the minimum.
+            Assert.AreEqual(1, EconomyService.ClampStake(0, 100, 20));
+            // Even when both caps fall below the minimum, the min stake wins.
+            Assert.AreEqual(1, EconomyService.ClampStake(5, 0, 0));
+            Assert.AreEqual(1, EconomyService.ClampStake(5, 100, 0));
+        }
+
+        [Test]
         public void Collection_MetWhenBankrollCoversDemand()
         {
             Assert.IsTrue(EconomyService.CanMeetCollection(20, 20));
