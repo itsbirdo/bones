@@ -228,12 +228,18 @@ namespace Bones.UI
             if (juice != null) juice.Play(tier);
             if (audioDirector != null) { audioDirector.Stinger(tier); audioDirector.SetHeat(report.Heat); }
 
+            // On the Reckoning, show the best-of-three running score in place of the money readout.
+            if (game.IsReckoning)
+                _result.text = $"Reckoning: you {game.Night.reckoningWins}, Vito {game.Night.reckoningLosses}.";
+
             RefreshHud();
             yield return new WaitForSeconds(1.1f);
 
             _busy = false;
-            // Night over? -> Collection. Broke mid-night -> game over. Else keep playing.
-            if (game.NightComplete()) ShowCollection();
+            // Reckoning over -> resolve the match straight to Freedom/Whacked (no Collection overlay).
+            // Otherwise: night over -> Collection; broke mid-night -> game over; else keep playing.
+            if (game.IsReckoning && game.NightComplete()) game.ResolveReckoning();
+            else if (game.NightComplete()) ShowCollection();
             else if (game.IsBroke) game.DeclareBrokeIfNeeded();
             else SetControlsEnabled(true);
         }
@@ -374,9 +380,9 @@ namespace Bones.UI
             _gameoverTitle.text = reason == RunEndReason.Victory ? "FREEDOM" : "WHACKED";
             _gameoverText.text = reason switch
             {
-                RunEndReason.Victory => "You burned the marker. Dawn's breaking. You're free.",
-                RunEndReason.Broke => "Cleaned out. Can't make a stake. The street swallows you.",
-                RunEndReason.Whacked => "You missed the Collection. They find you by the river.",
+                RunEndReason.Victory => "Vito touches the marker to his cigar and lets it burn to nothing. \"We're square.\" Dawn comes up gray. You walk out owing nobody.",
+                RunEndReason.Broke => "Empty hands, empty cup. A gambler with nothing to put up is just a man standing in the rain. There's no next night.",
+                RunEndReason.Whacked => "You came up short, and short has a price. They find your coat by the water, pockets empty, the marker still open.",
                 _ => "",
             };
             Show(_overlayGameover);
@@ -391,10 +397,20 @@ namespace Bones.UI
             _bankroll.text = $"${game.Run.bankroll}";
             if (night != null)
             {
-                _debt.text = $"${night.collectionDemand}";
-                _night.text = $"NIGHT {night.nightNumber}";
-                int left = Mathf.Max(0, night.gamesThisNight - game.Night.gamesPlayed);
-                _deadline.text = $"{left} throw{(left == 1 ? "" : "s")} left";
+                if (night.isReckoning)
+                {
+                    // No tribute tonight: it is the marker itself, settled best-of-three vs Vito.
+                    _debt.text = "THE MARKER";
+                    _night.text = "THE RECKONING";
+                    _deadline.text = $"you {game.Night.reckoningWins} - {game.Night.reckoningLosses} Vito";
+                }
+                else
+                {
+                    _debt.text = $"${night.collectionDemand}";
+                    _night.text = $"NIGHT {night.nightNumber}";
+                    int left = Mathf.Max(0, night.gamesThisNight - game.Night.gamesPlayed);
+                    _deadline.text = $"{left} throw{(left == 1 ? "" : "s")} left";
+                }
             }
             _heat.text = $"HEAT ×{EconomyService.Heat(game.Night.consecutiveWins):0.0}";
             _stake = EconomyService.ClampStake(_stake, game.Run.bankroll);

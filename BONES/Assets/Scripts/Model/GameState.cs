@@ -47,11 +47,24 @@ namespace Bones.Model
         public int consecutiveWins;            // drives Heat = 1 + 0.5 × this
         public bool layingLowThisGame;
 
+        // The Reckoning (spec §6.5): best-of-three vs Vito. Reset each night; only used on the
+        // Reckoning night. reckoningWins/Losses track the match score across the 3 games.
+        public int reckoningWins;
+        public int reckoningLosses;
+
         public void ResetForNewNight()
         {
             gamesPlayed = 0;
             consecutiveWins = 0;
             layingLowThisGame = false;
+            reckoningWins = 0;
+            reckoningLosses = 0;
+        }
+
+        public void OnReckoningGame(bool playerWon)
+        {
+            if (playerWon) reckoningWins++;
+            else reckoningLosses++;
         }
 
         public void OnWin() => consecutiveWins++;

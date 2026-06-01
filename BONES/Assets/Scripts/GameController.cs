@@ -40,6 +40,9 @@ namespace Bones
                 ? database.campaign.NightAt(Run != null ? Run.nightIndex : 0)
                 : null;
 
+        /// <summary>True on the final night: best-of-three vs Vito, Suspicion off (spec §6.5).</summary>
+        public bool IsReckoning => CurrentNight != null && CurrentNight.isReckoning;
+
         // --- Events for the UI ---
         public event Action<GameReport> GamePlayed;
         public event Action NightStarted;
@@ -311,6 +314,11 @@ namespace Bones
         {
             var night = CurrentNight;
             if (night == null || Run == null) return false;
+            // The Reckoning: no broke/collection path tonight (spec §6.5). You play out the match;
+            // it ends the instant a side clinches 2 of 3.
+            if (night.isReckoning)
+                return !ReckoningService.MatchResolved(Night.reckoningWins, Night.reckoningLosses)
+                    && Night.gamesPlayed < night.gamesThisNight;
             return Night.gamesPlayed < night.gamesThisNight && !EconomyService.IsBroke(Run.bankroll);
         }
 
@@ -325,6 +333,11 @@ namespace Bones
             var (d0, d1, d2) = CupSpecs();
             double loading = night != null ? night.opponentLoading : 0f;
             TieRule tie = night != null ? night.tieRule : TieRule.Banker;
+
+            // The Reckoning: Vito saves his nastiest bones for the 1-1 deciding game (spec §6.5).
+            bool reckoning = night != null && night.isReckoning;
+            if (reckoning)
+                loading = ReckoningService.EffectiveLoading(loading, Night.reckoningWins, Night.reckoningLosses);
 
             var round = RoundService.PlayRound(_rng, d0, d1, d2, loading, tie);
             int winsBefore = Night.consecutiveWins;
@@ -345,7 +358,9 @@ namespace Bones
             }
 
             bool busted = false;
-            if (win)
+            // Suspicion is OFF during the Reckoning: both sides cheat openly, no bust checks (spec §6.5).
+            // Cheats still work; we just never roll the bust and never spend Favor charges.
+            if (win && !reckoning)
             {
                 double bust = SuspicionService.BustChance(SummedSuspicion(), FavorReduction(), layLow);
                 busted = SuspicionService.RollBust(_rng, bust);
@@ -372,6 +387,11 @@ namespace Bones
                 Night.OnLossOrBust();
             }
             // Push: no change, Heat preserved.
+
+            // The Reckoning is scored as a match: a clean banker win is your game, anything else is Vito's
+            // (a push or loss does not advance you toward the 2 wins you need). Money still banks above.
+            if (reckoning)
+                Night.OnReckoningGame(win && !busted);
 
             Night.gamesPlayed++;
             _save.account.fenceUnlocked = true; // unlocks after the first resolved game
@@ -404,15 +424,33 @@ namespace Bones
         public bool NightComplete()
         {
             var night = CurrentNight;
-            return night != null && Night.gamesPlayed >= night.gamesThisNight;
+            if (night == null) return false;
+            // The Reckoning completes early the moment a side clinches the best-of-three.
+            if (night.isReckoning && ReckoningService.MatchResolved(Night.reckoningWins, Night.reckoningLosses))
+                return true;
+            return Night.gamesPlayed >= night.gamesThisNight;
         }
 
         // ---- Collection / night transition ----
+
+        /// <summary>
+        /// The Reckoning finale (spec §6.5): no collection. Win the best-of-three vs Vito for
+        /// Freedom; otherwise it is a death (Whacked). Called once the match has resolved.
+        /// </summary>
+        public void ResolveReckoning()
+        {
+            EndRun(ReckoningService.PlayerWonMatch(Night.reckoningWins, Night.reckoningLosses)
+                ? RunEndReason.Victory
+                : RunEndReason.Whacked);
+        }
 
         public void ResolveCollection()
         {
             var night = CurrentNight;
             if (night == null) { EndRun(RunEndReason.Victory); return; }
+
+            // No tribute on the Reckoning night: resolve the marker showdown instead.
+            if (night.isReckoning) { ResolveReckoning(); return; }
 
             if (!EconomyService.CanMeetCollection(Run.bankroll, night.collectionDemand))
             {
