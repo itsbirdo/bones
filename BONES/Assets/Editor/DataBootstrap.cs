@@ -210,6 +210,8 @@ namespace Bones.Editor
             });
             db.campaign = campaign;
             db.juice = juice;
+            db.showMetersInDev = true; // dev aid: Heat/Suspicion meters visible; flip OFF for release
+
             // Brand-new-account starting core ONLY (ACHIEVEMENTS.md "Starting core pool"): two
             // intuitive cheat dice plus one charm. Everything else implemented is earned through play
             // via Bones.Core.AchievementService (see AchievementService.ActiveTable):

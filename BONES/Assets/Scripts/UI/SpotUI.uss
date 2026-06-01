@@ -31,6 +31,7 @@
 .danger { color: rgb(190, 40, 44); }
 .hud-night { font-size: 16px; letter-spacing: 3px; color: rgb(200, 195, 182); }
 .hud-heat { font-size: 22px; -unity-font-style: bold; color: rgb(212, 168, 56); }
+.hud-suspicion { font-size: 13px; -unity-font-style: bold; letter-spacing: 1px; color: rgb(180, 110, 70); }
 
 /* ---- Stage ---- */
 .stage {

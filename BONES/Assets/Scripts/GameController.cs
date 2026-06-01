@@ -362,11 +362,45 @@ namespace Bones
 
         public int MaxStake() => EconomyService.MaxStake(Run.bankroll);
 
+        /// <summary>
+        /// The largest legal stake tonight: capped by BOTH the bankroll AND the night's tribute (you can
+        /// never stake more than the Collector demands). On the Reckoning there is no tribute, so the
+        /// bankroll alone caps it. Never below the minimum stake.
+        /// </summary>
+        public int MaxStakeThisNight()
+        {
+            if (Run == null) return EconomyService.MinStake;
+            var night = CurrentNight;
+            if (night == null || night.isReckoning)
+                return Math.Max(EconomyService.MinStake, EconomyService.MaxStake(Run.bankroll));
+            return ClampStakeThisNight(EconomyService.MaxStake(Run.bankroll));
+        }
+
+        /// <summary>Clamp a desired stake to tonight's bankroll- and tribute-aware bounds (min stake 1).</summary>
+        public int ClampStakeThisNight(int desired)
+        {
+            if (Run == null) return EconomyService.MinStake;
+            var night = CurrentNight;
+            if (night == null || night.isReckoning)
+                return EconomyService.ClampStake(desired, Run.bankroll);
+            return EconomyService.ClampStake(desired, Run.bankroll, night.collectionDemand);
+        }
+
+        /// <summary>
+        /// The standing bust chance for the equipped loadout, as a percent (0–100). Ignores Lay Low so the
+        /// player always sees their build's risk. Suspicion is OFF on the Reckoning night, so returns 0 there.
+        /// </summary>
+        public double CurrentBustPercent()
+        {
+            if (Run == null || IsReckoning) return 0.0;
+            return SuspicionService.BustChance(SummedSuspicion(), FavorReduction(), false) * 100.0;
+        }
+
         /// <summary>Play one Cee-lo round at the given stake. Returns the fully-resolved report.</summary>
         public GameReport PlayGame(int desiredStake, bool layLow)
         {
             var night = CurrentNight;
-            int stake = EconomyService.ClampStake(desiredStake, Run.bankroll);
+            int stake = ClampStakeThisNight(desiredStake);
 
             var (d0, d1, d2) = CupSpecs();
             double loading = night != null ? night.opponentLoading : 0f;

@@ -26,7 +26,7 @@ namespace Bones.UI
         private bool _busy;
 
         // Cached elements
-        private Label _debt, _deadline, _night, _heat, _bankroll, _stakeValue, _sfx, _result, _collectionText, _gameoverTitle, _gameoverText;
+        private Label _debt, _deadline, _night, _heat, _suspicion, _bankroll, _stakeValue, _sfx, _result, _collectionText, _gameoverTitle, _gameoverText;
         private Button _throw, _stakeUp, _stakeDown, _bag, _fence, _newRun, _resumeRun, _collectionContinue, _fenceClose, _gameoverRestart, _bagClose, _fenceReroll;
         private Label _fenceCash;
         private Toggle _layLow;
@@ -77,6 +77,7 @@ namespace Bones.UI
             _deadline = _root.Q<Label>("deadline-value");
             _night = _root.Q<Label>("night-value");
             _heat = _root.Q<Label>("heat-value");
+            _suspicion = _root.Q<Label>("suspicion-value");
             _bankroll = _root.Q<Label>("bankroll-value");
             _stakeValue = _root.Q<Label>("stake-value");
             _sfx = _root.Q<Label>("sfx-letters");
@@ -413,7 +414,15 @@ namespace Bones.UI
                 }
             }
             _heat.text = $"HEAT ×{EconomyService.Heat(game.Night.consecutiveWins):0.0}";
-            _stake = EconomyService.ClampStake(_stake, game.Run.bankroll);
+            _suspicion.text = $"SUSPICION {(int)System.Math.Round(game.CurrentBustPercent())}%";
+
+            // Dev aid: the Heat/Suspicion meters are visible only when the database flag is on.
+            // At ship they become "felt only" (atmospheric conveyance deferred with art).
+            bool showMeters = game.Database != null && game.Database.showMetersInDev;
+            _heat.style.display = showMeters ? DisplayStyle.Flex : DisplayStyle.None;
+            _suspicion.style.display = showMeters ? DisplayStyle.Flex : DisplayStyle.None;
+
+            _stake = game.ClampStakeThisNight(_stake);
             _stakeValue.text = $"${_stake}";
         }
 
@@ -421,7 +430,7 @@ namespace Bones.UI
         {
             if (game == null || game.Run == null) return;
             int step = _stake < 10 ? 1 : _stake < 50 ? 5 : 25;
-            _stake = EconomyService.ClampStake(_stake + dir * step, game.Run.bankroll);
+            _stake = game.ClampStakeThisNight(_stake + dir * step);
             _stakeValue.text = $"${_stake}";
         }
 

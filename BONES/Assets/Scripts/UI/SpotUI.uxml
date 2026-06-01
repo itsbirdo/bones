@@ -13,6 +13,7 @@
             <ui:VisualElement class="hud-block center">
                 <ui:Label name="night-value" text="NIGHT 1" class="hud-night" />
                 <ui:Label name="heat-value" text="HEAT ×1.0" class="hud-heat" />
+                <ui:Label name="suspicion-value" text="SUSPICION 0%" class="hud-suspicion" />
             </ui:VisualElement>
             <ui:VisualElement class="hud-block right">
                 <ui:Label text="BANKROLL" class="hud-label" />
