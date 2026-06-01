@@ -73,7 +73,7 @@
 
         <ui:VisualElement name="overlay-bag" class="overlay hidden">
             <ui:Label text="THE BAG" class="title-big" />
-            <ui:Label text="Your cup — three dice. Tap a slot to swap in a die you own." class="title-sub" />
+            <ui:Label text="Your cup of three dice. Tap a slot to swap in a die you own." class="title-sub" />
             <ui:VisualElement name="bag-slots" class="fence-stock" />
             <ui:Button name="bag-close" text="BACK TO THE ALLEY" class="overlay-button" />
         </ui:VisualElement>

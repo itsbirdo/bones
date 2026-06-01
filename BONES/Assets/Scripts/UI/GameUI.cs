@@ -381,7 +381,7 @@ namespace Bones.UI
                 var captured = offer;
                 string name = offer.isItem ? db.FindItem(offer.id)?.displayName : db.FindDie(offer.id)?.displayName;
                 var row = new VisualElement(); row.AddToClassList("fence-item");
-                var label = new Label(offer.sold ? $"{name}  —  SOLD" : $"{name}  —  ${offer.price}");
+                var label = new Label(offer.sold ? $"{name}  ·  SOLD" : $"{name}  ·  ${offer.price}");
                 label.style.flexGrow = 1f;
                 var buy = new Button(() => { if (game.TryBuyOffer(captured)) ShowFence(); }) { text = "BUY" };
                 buy.AddToClassList("fence-buy");
@@ -392,7 +392,7 @@ namespace Bones.UI
 
             // Re-roll.
             int rerollCost = game.FenceRerollCost();
-            _fenceReroll.text = $"RE-ROLL THE STOCK  —  ${rerollCost}";
+            _fenceReroll.text = $"RE-ROLL THE STOCK  ·  ${rerollCost}";
             _fenceReroll.SetEnabled(game.Run.bankroll >= rerollCost);
 
             // Honing: owned dice below max level.
@@ -404,7 +404,7 @@ namespace Bones.UI
                 var def = db.FindDie(owned.dieId);
                 int cost = game.HoneCost(owned.dieId);
                 var row = new VisualElement(); row.AddToClassList("fence-item");
-                var label = new Label($"{def.displayName}  Lv.{owned.level} → {owned.level + 1}  —  ${cost}");
+                var label = new Label($"{def.displayName}  Lv.{owned.level} → {owned.level + 1}  ·  ${cost}");
                 label.style.flexGrow = 1f;
                 var hone = new Button(() => { if (game.TryHoneDie(capturedId)) ShowFence(); }) { text = "HONE" };
                 hone.AddToClassList("fence-buy");
