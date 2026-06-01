@@ -83,6 +83,12 @@ namespace Bones.Model
         public int biggestPot;
         public bool fenceUnlocked;             // hidden until the first game resolves
 
+        // Lifetime counters that drive achievement triggers (see Bones.Core.AchievementService).
+        public int gamesWon;                   // total clean (non-busted) wins across all runs
+        public int fourFiveSixCount;           // total 4-5-6 hands the banker has rolled
+        public int tripleCount;                // total triples the banker has rolled
+        public int highestNightReached;        // deepest 1-based night number ever reached
+
         public bool IsUnlocked(string id) => unlockedIds.Contains(id);
 
         public bool Unlock(string id)

@@ -50,6 +50,10 @@ namespace Bones
         public event Action<RunEndReason> RunEnded;
         public event Action StateChanged;
 
+        /// <summary>Fires once per newly unlocked reward item id (account-level, permanent).
+        /// The unlock-notification UI is a separate subtask; until then a Debug.Log is the placeholder.</summary>
+        public event Action<string> ItemUnlocked;
+
         private SaveData _save;
         private IRng _rng;
         private PayoutTable _payouts = PayoutTable.Default;
@@ -73,6 +77,40 @@ namespace Bones
         {
             if (database == null) return;
             foreach (var id in database.startingUnlocks) _save.account.Unlock(id);
+            SaveSystem.Save(_save);
+        }
+
+        /// <summary>
+        /// Run the pure AchievementService against a signal built from current lifetime stats, unlock any
+        /// newly satisfied reward items on the account (permanent), persist, and fire ItemUnlocked. The
+        /// caller is responsible for having already bumped the relevant lifetime counters on the account.
+        /// </summary>
+        private void EvaluateAchievements(AchievementEvent ev, GameReport? report = null)
+        {
+            var acc = _save.account;
+            var signal = new AchievementSignal(
+                ev,
+                wasWin: report?.WasWin ?? false,
+                wasBust: report?.Busted ?? false,
+                bankerKind: report?.Round.Banker.Result.Kind ?? CeeloKind.Nothing,
+                bankerValue: report?.Round.Banker.Result.Value ?? 0,
+                highestNightReached: acc.highestNightReached,
+                gamesWon: acc.gamesWon,
+                fourFiveSixCount: acc.fourFiveSixCount,
+                tripleCount: acc.tripleCount,
+                busts: acc.busts,
+                deaths: acc.deaths,
+                runsWon: acc.runsWon);
+
+            var newly = AchievementService.Evaluate(signal, acc.unlockedIds);
+            if (newly.Count == 0) return;
+
+            foreach (var a in newly)
+            {
+                if (!acc.Unlock(a.RewardItemId)) continue;
+                Debug.Log($"[BONES] Unlocked '{a.RewardItemId}': {a.UnlockLine}");
+                ItemUnlocked?.Invoke(a.RewardItemId);
+            }
             SaveSystem.Save(_save);
         }
 
@@ -379,6 +417,7 @@ namespace Bones
             {
                 Run.bankroll += (int)Math.Round(delta);
                 Night.OnWin();
+                _save.account.gamesWon++;
                 if (Run.bankroll > _save.account.biggestPot) _save.account.biggestPot = Run.bankroll;
             }
             else if (round.Outcome == GameOutcome.BankerLoss)
@@ -392,6 +431,12 @@ namespace Bones
             // (a push or loss does not advance you toward the 2 wins you need). Money still banks above.
             if (reckoning)
                 Night.OnReckoningGame(win && !busted);
+
+            // Track the banker's headline hands for achievement triggers (counts on any outcome:
+            // rolling a 4-5-6 or a triple is the feat, win or not).
+            var bankerKind = round.Banker.Result.Kind;
+            if (bankerKind == CeeloKind.FourFiveSix) _save.account.fourFiveSixCount++;
+            else if (bankerKind == CeeloKind.Triple) _save.account.tripleCount++;
 
             Night.gamesPlayed++;
             _save.account.fenceUnlocked = true; // unlocks after the first resolved game
@@ -407,6 +452,8 @@ namespace Bones
                 Heat = heat,
                 WasWin = win && !busted,
             };
+
+            EvaluateAchievements(AchievementEvent.GamePlayed, report);
 
             GamePlayed?.Invoke(report);
             StateChanged?.Invoke();
@@ -462,6 +509,11 @@ namespace Bones
             Run.bankroll -= night.collectionDemand;
             CollectionResolved?.Invoke(true);
 
+            // You cleared this night: record the deepest night reached, then check survival achievements.
+            if (night.nightNumber > _save.account.highestNightReached)
+                _save.account.highestNightReached = night.nightNumber;
+            EvaluateAchievements(AchievementEvent.NightSurvived);
+
             Run.nightIndex++;
             SaveSystem.Save(_save);
 
@@ -488,6 +540,10 @@ namespace Bones
             _save.hasActiveRun = false;
             _save.activeRun = null;
             SaveSystem.Save(_save);
+
+            // End-of-run achievements (depth reached this run, lifetime death/win counts).
+            EvaluateAchievements(AchievementEvent.RunEnded);
+
             RunEnded?.Invoke(reason);
         }
 

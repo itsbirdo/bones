@@ -210,14 +210,21 @@ namespace Bones.Editor
             });
             db.campaign = campaign;
             db.juice = juice;
-            // ONLY fully-implemented, balanced-to-test items: the 5 original unlocks plus the new
-            // clean maps (Shaved Edge, The Sequencer, The Magnet, Hot Hand, Greased Palm, Cooler Head).
-            // Deferred (stubbed) items stay out until their systems + achievement unlocks land.
+            // Brand-new-account starting core ONLY (ACHIEVEMENTS.md "Starting core pool"): two
+            // intuitive cheat dice plus one charm. Everything else implemented is earned through play
+            // via Bones.Core.AchievementService (see AchievementService.ActiveTable):
+            //   streak_charm  <- win your first game
+            //   hot_hand      <- win 3 games
+            //   headcracker   <- first 4-5-6
+            //   the_magnet    <- first triple
+            //   greased_palm  <- survive your first night
+            //   shaved_edge   <- reach Night 3
+            //   the_sequencer <- reach Night 5
+            //   cooler_head   <- get busted
+            // Deferred (stubbed) items stay out of both lists until their systems exist.
             db.startingUnlocks = new System.Collections.Generic.List<string>
             {
-                "snake_killer", "lucky_six", "gilded_die", "streak_charm", "headcracker",
-                "shaved_edge", "the_sequencer", "the_magnet", "hot_hand",
-                "greased_palm", "cooler_head",
+                "snake_killer", "lucky_six", "gilded_die",
             };
             EnsureDir("Assets/Resources");
             CreateAsset(db, "Assets/Resources/GameDatabase.asset"); // in Resources so GameController can auto-load it
@@ -233,8 +240,8 @@ namespace Bones.Editor
                 "MVP data generated under Assets/Data:\n" +
                 "• 26 dice total (1 bone + 25 catalog dice: loaded, control, charm, curse)\n" +
                 "• 15 items total (5 favors + 10 trinkets)\n" +
-                "• 11 starting unlocks (fully-implemented dice + favors); the rest are stubbed,\n" +
-                "  awaiting their systems + achievement unlocks (see CATALOG.md)\n" +
+                "• 3 starting unlocks (Snake Killer, Lucky Six, Gilded Die); other implemented\n" +
+                "  items are earned via achievements; stubbed items await their systems (see CATALOG.md)\n" +
                 "• Nights 1–7 (Night 7 = the Reckoning) + Campaign\n" +
                 "• JuiceTiers + GameDatabase (wired)\n\n" +
                 "Next: BONES ▸ Build Playable Scene.", "OK");
