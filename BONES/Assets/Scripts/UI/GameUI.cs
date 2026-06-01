@@ -26,11 +26,12 @@ namespace Bones.UI
         private bool _busy;
 
         // Cached elements
-        private Label _debt, _deadline, _night, _heat, _suspicion, _bankroll, _stakeValue, _sfx, _result, _collectionText, _gameoverTitle, _gameoverText;
-        private Button _throw, _stakeUp, _stakeDown, _bag, _fence, _newRun, _resumeRun, _collectionContinue, _fenceClose, _gameoverRestart, _bagClose, _fenceReroll;
+        private Label _debt, _deadline, _night, _heat, _suspicion, _bankroll, _stakeValue, _sfx, _result, _collectionText, _gameoverTitle, _gameoverText, _runSummary;
+        private Label _unlockToastTitle, _unlockToastFlavor;
+        private Button _throw, _stakeUp, _stakeDown, _bag, _fence, _newRun, _resumeRun, _collectionContinue, _fenceClose, _gameoverRestart, _bagClose, _fenceReroll, _introContinue;
         private Label _fenceCash;
         private Toggle _layLow;
-        private VisualElement _overlayTitle, _overlayCollection, _overlayFence, _overlayGameover, _fenceStock, _overlayBag, _bagSlots, _fenceHone;
+        private VisualElement _overlayTitle, _overlayCollection, _overlayFence, _overlayGameover, _fenceStock, _overlayBag, _bagSlots, _fenceHone, _overlayIntro, _unlockToast;
 
         private void Awake()
         {
@@ -57,6 +58,7 @@ namespace Bones.UI
             {
                 game.StateChanged += RefreshHud;
                 game.RunEnded += OnRunEnded;
+                game.ItemUnlocked += OnItemUnlocked;
             }
         }
 
@@ -66,6 +68,7 @@ namespace Bones.UI
             {
                 game.StateChanged -= RefreshHud;
                 game.RunEnded -= OnRunEnded;
+                game.ItemUnlocked -= OnItemUnlocked;
             }
         }
 
@@ -85,6 +88,9 @@ namespace Bones.UI
             _collectionText = _root.Q<Label>("collection-text");
             _gameoverTitle = _root.Q<Label>("gameover-title");
             _gameoverText = _root.Q<Label>("gameover-text");
+            _runSummary = _root.Q<Label>("run-summary");
+            _unlockToastTitle = _root.Q<Label>("unlock-toast-title");
+            _unlockToastFlavor = _root.Q<Label>("unlock-toast-flavor");
 
             _throw = _root.Q<Button>("throw-button");
             _stakeUp = _root.Q<Button>("stake-up");
@@ -97,9 +103,12 @@ namespace Bones.UI
             _fenceClose = _root.Q<Button>("fence-close");
             _gameoverRestart = _root.Q<Button>("gameover-restart");
             _bagClose = _root.Q<Button>("bag-close");
+            _introContinue = _root.Q<Button>("intro-continue");
             _layLow = _root.Q<Toggle>("lay-low");
 
             _overlayTitle = _root.Q<VisualElement>("overlay-title");
+            _overlayIntro = _root.Q<VisualElement>("overlay-intro");
+            _unlockToast = _root.Q<VisualElement>("unlock-toast");
             _overlayCollection = _root.Q<VisualElement>("overlay-collection");
             _overlayFence = _root.Q<VisualElement>("overlay-fence");
             _overlayGameover = _root.Q<VisualElement>("overlay-gameover");
@@ -125,6 +134,7 @@ namespace Bones.UI
             _gameoverRestart.clicked += OnNewRun;
             _bag.clicked += ShowBag;
             _bagClose.clicked += () => Hide(_overlayBag);
+            _introContinue.clicked += OnIntroContinue;
 
             WireFlick();
         }
@@ -150,7 +160,7 @@ namespace Bones.UI
         private void ShowTitle()
         {
             Show(_overlayTitle);
-            Hide(_overlayCollection); Hide(_overlayFence); Hide(_overlayGameover);
+            Hide(_overlayCollection); Hide(_overlayFence); Hide(_overlayGameover); Hide(_overlayIntro);
             SetControlsEnabled(false); // no HUD interaction until a run starts
             // Resume only if a run is in progress.
             bool hasRun = game != null && game.TryPeekActiveRun();
@@ -163,6 +173,15 @@ namespace Bones.UI
             game.StartNewRun();
             _stake = 1;
             RefreshHud();
+            // Brand-new run only: meet Vito before Night 1. Controls stay off behind the intro.
+            SetControlsEnabled(false);
+            Show(_overlayIntro);
+        }
+
+        // Dismiss the one-time Vito intro into Night 1 (the run is already started).
+        private void OnIntroContinue()
+        {
+            Hide(_overlayIntro);
             SetControlsEnabled(true);
         }
 
@@ -172,7 +191,7 @@ namespace Bones.UI
             game.TryResumeRun();
             _stake = 1;
             RefreshHud();
-            SetControlsEnabled(true);
+            SetControlsEnabled(true); // resume goes straight to play, no intro
         }
 
         // ---- The throw flow ----
@@ -302,6 +321,30 @@ namespace Bones.UI
                 row.Add(label);
                 _bagSlots.Add(row);
             }
+
+            // Collection view: read-only list of everything unlocked on the account (the noir
+            // story beats you can browse). Resolve each id against the die/item database.
+            if (game.Account != null && game.Account.unlockedIds.Count > 0)
+            {
+                var header = new Label("UNLOCKED");
+                header.AddToClassList("fence-section");
+                _bagSlots.Add(header);
+
+                foreach (var id in game.Account.unlockedIds)
+                {
+                    var die = game.Database.FindDie(id);
+                    string name = die != null ? die.displayName : game.Database.FindItem(id)?.displayName;
+                    string flavor = die != null ? die.flavor : game.Database.FindItem(id)?.flavor;
+                    if (string.IsNullOrEmpty(name)) continue;
+                    var row = new VisualElement(); row.AddToClassList("fence-item");
+                    var label = new Label(string.IsNullOrEmpty(flavor) ? name : $"{name}\n{flavor}");
+                    label.style.flexGrow = 1f;
+                    label.style.whiteSpace = WhiteSpace.Normal;
+                    row.Add(label);
+                    _bagSlots.Add(row);
+                }
+            }
+
             Show(_overlayBag);
         }
 
@@ -373,6 +416,35 @@ namespace Bones.UI
             Show(_overlayFence);
         }
 
+        // ---- Unlock discovery (non-blocking toast) ----
+
+        // Subscribed in OnEnable. Fires once per newly unlocked reward item id. Show the latest;
+        // a new unlock simply restarts the toast (simple, never blocks play).
+        private void OnItemUnlocked(string id)
+        {
+            if (_unlockToast == null || game == null || game.Database == null) return;
+            string name = game.Database.FindDie(id)?.displayName
+                ?? game.Database.FindItem(id)?.displayName ?? id;
+            string flavor = game.Database.FindDie(id)?.flavor
+                ?? game.Database.FindItem(id)?.flavor ?? "";
+            _unlockToastTitle.text = $"New in the Bag: {name}";
+            _unlockToastFlavor.text = flavor;
+
+            StopCoroutine(nameof(UnlockToastRoutine));
+            StartCoroutine(nameof(UnlockToastRoutine));
+        }
+
+        private IEnumerator UnlockToastRoutine()
+        {
+            Show(_unlockToast);
+            _unlockToast.style.opacity = 0f;
+            _unlockToast.experimental.animation.Start(0f, 1f, 350, (e, v) => ((VisualElement)e).style.opacity = v);
+            yield return new WaitForSeconds(3f);
+            _unlockToast.experimental.animation.Start(1f, 0f, 450, (e, v) => ((VisualElement)e).style.opacity = v);
+            yield return new WaitForSeconds(0.5f);
+            Hide(_unlockToast);
+        }
+
         // ---- Game over ----
 
         private void OnRunEnded(RunEndReason reason)
@@ -386,7 +458,23 @@ namespace Bones.UI
                 RunEndReason.Whacked => "You came up short, and short has a price. They find your coat by the water, pockets empty, the marker still open.",
                 _ => "",
             };
+            if (_runSummary != null) _runSummary.text = BuildRunSummary();
             Show(_overlayGameover);
+        }
+
+        // Run/lifetime tally beneath the game-over flavor. Reads what the account exposes; Run may be
+        // null after the run ends, so nights-survived falls back to the deepest night reached.
+        private string BuildRunSummary()
+        {
+            var acc = game != null ? game.Account : null;
+            if (acc == null) return "";
+            int nightsThisRun = game.Run != null ? game.Run.nightIndex : acc.highestNightReached;
+            return
+                $"Nights survived this run: {nightsThisRun}\n" +
+                $"Runs started: {acc.runsStarted}     Runs won: {acc.runsWon}\n" +
+                $"Deaths: {acc.deaths}     Busts: {acc.busts}\n" +
+                $"Games won: {acc.gamesWon}     Biggest pot: ${acc.biggestPot}\n" +
+                $"Deepest night reached: {acc.highestNightReached}";
         }
 
         // ---- HUD ----

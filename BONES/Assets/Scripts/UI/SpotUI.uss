@@ -52,6 +52,45 @@
     margin-top: 8px;
 }
 
+/* ---- Unlock toast (non-blocking) ---- */
+.unlock-toast {
+    position: absolute;
+    left: 0; right: 0; top: 96px;
+    align-items: center;
+    opacity: 0;
+}
+.unlock-toast-title {
+    font-size: 18px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgb(212, 168, 56);
+    background-color: rgba(12, 11, 13, 0.92);
+    padding: 8px 18px;
+    border-radius: 6px;
+    -unity-text-align: middle-center;
+}
+.unlock-toast-flavor {
+    font-size: 13px;
+    color: rgb(170, 164, 150);
+    white-space: normal;
+    -unity-text-align: middle-center;
+    max-width: 420px;
+    background-color: rgba(12, 11, 13, 0.92);
+    padding: 4px 18px 8px 18px;
+    margin-top: 0;
+    border-radius: 6px;
+}
+
+/* ---- Run summary (game-over tally) ---- */
+.run-summary {
+    font-size: 15px;
+    color: rgb(190, 184, 170);
+    white-space: normal;
+    -unity-text-align: middle-center;
+    max-width: 460px;
+    margin-bottom: 24px;
+}
+
 /* ---- Controls ---- */
 .controls {
     padding: 14px 18px 28px 18px;

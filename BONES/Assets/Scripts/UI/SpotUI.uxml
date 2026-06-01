@@ -27,6 +27,12 @@
             <ui:Label name="result-readout" text="" class="result-readout" />
         </ui:VisualElement>
 
+        <!-- Non-blocking unlock toast: fades in over play, auto-hides -->
+        <ui:VisualElement name="unlock-toast" class="unlock-toast hidden">
+            <ui:Label name="unlock-toast-title" text="" class="unlock-toast-title" />
+            <ui:Label name="unlock-toast-flavor" text="" class="unlock-toast-flavor" />
+        </ui:VisualElement>
+
         <!-- Bottom controls -->
         <ui:VisualElement name="controls" class="controls">
             <ui:VisualElement class="stake-row">
@@ -51,6 +57,12 @@
             <ui:Label text="You owe Vito. Pay the marker, or end up under the El." class="title-sub" />
             <ui:Button name="new-run" text="NEW RUN" class="overlay-button" />
             <ui:Button name="resume-run" text="RESUME" class="overlay-button" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="overlay-intro" class="overlay hidden">
+            <ui:Label text="THE MARKER" class="title-big" />
+            <ui:Label text="Back room. Cigar smoke. Rain working the window like it wants in.&#10;&#10;&quot;Sit. You don't look like a man holding my money. Relax, I'm reasonable. We'll call it a marker.&quot;&#10;&#10;He slides a slip across the felt. The ink's still wet.&#10;&#10;&quot;Word is you're good with the bones. So you'll roll. Every night my Collector comes around. You pay what's on the marker, or we have a different kind of conversation.&quot;&#10;&#10;&quot;Seven nights. Pay me back, with interest, and we're square. Miss one, and the river's cold this time of year.&quot;&#10;&#10;You take the marker. Outside, it hasn't stopped raining in a week." class="title-sub" />
+            <ui:Button name="intro-continue" text="TAKE THE MARKER" class="overlay-button" />
         </ui:VisualElement>
 
         <ui:VisualElement name="overlay-collection" class="overlay hidden">
@@ -79,6 +91,8 @@
         <ui:VisualElement name="overlay-gameover" class="overlay hidden">
             <ui:Label name="gameover-title" text="WHACKED" class="title-big danger" />
             <ui:Label name="gameover-text" text="" class="title-sub" />
+            <ui:Label text="THE TALLY" class="fence-section" />
+            <ui:Label name="run-summary" text="" class="run-summary" />
             <ui:Button name="gameover-restart" text="ANOTHER RUN" class="overlay-button" />
         </ui:VisualElement>
 
