@@ -337,8 +337,10 @@ namespace Bones
             bool busted = false;
             if (win)
             {
-                double bust = SuspicionService.BustChance(SummedSuspicion(), 0.0, layLow);
+                double bust = SuspicionService.BustChance(SummedSuspicion(), FavorReduction(), layLow);
                 busted = SuspicionService.RollBust(_rng, bust);
+                // A bust check actually occurred (winning settle, not laying low): spend favor charges.
+                if (!layLow) ConsumeSuspicionFavors();
             }
 
             // Apply to bankroll.
@@ -472,6 +474,32 @@ namespace Bones
                 if (def != null) sum += def.suspicion;
             }
             return sum;
+        }
+
+        /// <summary>Adapt owned suspicion_reduce favors to plain data for the pure FavorService.</summary>
+        private System.Collections.Generic.IEnumerable<(double magnitude, int charges)> SuspicionFavors()
+        {
+            foreach (var owned in Run.ownedItems)
+            {
+                var def = database.FindItem(owned.itemId);
+                if (def != null && def.effectTag == "suspicion_reduce")
+                    yield return (def.magnitude, owned.chargesRemaining);
+            }
+        }
+
+        /// <summary>Total bust-% reduction from active (charged) suspicion favors. Spec §9.2.</summary>
+        private double FavorReduction() => FavorService.SuspicionReduction(SuspicionFavors());
+
+        /// <summary>Spend one charge from each contributing suspicion_reduce favor (floor 0).</summary>
+        private void ConsumeSuspicionFavors()
+        {
+            foreach (var owned in Run.ownedItems)
+            {
+                if (owned.chargesRemaining <= 0) continue;
+                var def = database.FindItem(owned.itemId);
+                if (def != null && def.effectTag == "suspicion_reduce")
+                    owned.chargesRemaining = Math.Max(0, owned.chargesRemaining - 1);
+            }
         }
 
         /// <summary>Payout charms (e.g. Gilded Die) add a multiplier on a win when they proc.</summary>
