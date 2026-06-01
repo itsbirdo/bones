@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325dcb152dd284bb797c75788851dc30, type: 3}
+  m_Name: Die_gilded_die
+  m_EditorClassIdentifier: 
+  id: gilded_die
+  displayName: Gilded Die
+  flavor: Pays a little extra when the night goes your way.
+  tier: 4
+  effect: 7
+  procChanceByLevel:
+  - 0.3
+  - 0.4
+  - 0.5
+  suspicion: 0
+  basePrice: 16
+  maxLevel: 3
+  meshOverride: {fileID: 0}
+  materialOverride: {fileID: 0}
+  cardIcon: {fileID: 0}

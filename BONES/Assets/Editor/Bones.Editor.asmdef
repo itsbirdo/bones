@@ -1,0 +1,19 @@
+{
+    "name": "Bones.Editor",
+    "rootNamespace": "Bones.Editor",
+    "references": [
+        "Bones.Core",
+        "Bones.Game"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

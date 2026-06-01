@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e9bbed60c604982be58f7225220103, type: 3}
+  m_Name: JuiceTiers
+  m_EditorClassIdentifier: 
+  tiers:
+  - tier: 0
+    screenShake: 0.03
+    particleBurst: 2
+    timeScaleDip: 0
+    flashColor: {r: 1, g: 1, b: 1, a: 0}
+    musicSwell: 0
+    panelFracture: 0
+  - tier: 1
+    screenShake: 0.1
+    particleBurst: 12
+    timeScaleDip: 0
+    flashColor: {r: 0.83, g: 0.66, b: 0.22, a: 0.2}
+    musicSwell: 0.3
+    panelFracture: 0
+  - tier: 2
+    screenShake: 0.25
+    particleBurst: 40
+    timeScaleDip: 0.3
+    flashColor: {r: 1, g: 0.55, b: 0.1, a: 0.4}
+    musicSwell: 0.7
+    panelFracture: 0
+  - tier: 3
+    screenShake: 0.55
+    particleBurst: 120
+    timeScaleDip: 0.6
+    flashColor: {r: 1, g: 0.85, b: 0.3, a: 0.7}
+    musicSwell: 1.2
+    panelFracture: 1
+  - tier: 4
+    screenShake: 0.4
+    particleBurst: 0
+    timeScaleDip: 0.5
+    flashColor: {r: 0.6, g: 0.05, b: 0.07, a: 0.7}
+    musicSwell: 0
+    panelFracture: 1

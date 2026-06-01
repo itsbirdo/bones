@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BONES — Asset & Build Manifest</title>
+<style>
+  :root{
+    --bg:#131419; --bg2:#0d0e12; --ink:#e9ddc4; --ink-dim:#9c8f73;
+    --amber:#e0a83a; --amber-glow:#ffcb55; --red:#d8786a; --line:#2c2922;
+    --panel:#1b1c22; --code:#1d2530;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.18) 3px 4px),
+      radial-gradient(ellipse 100% 60% at 50% 0%, #1d1e24 0%, var(--bg) 55%, var(--bg2) 100%);
+    color:var(--ink);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:54px 26px 120px;}
+  .doc-banner{
+    border-bottom:1px solid var(--line); margin-bottom:8px; padding-bottom:14px;
+    font-size:11px; letter-spacing:.34em; text-transform:uppercase; color:var(--ink-dim);
+  }
+  h1,h2,h3{ font-family:"Georgia",serif; line-height:1.25; }
+  h1{
+    font-size:42px; letter-spacing:.06em; color:var(--amber); margin:.3em 0 .05em;
+    text-shadow:0 0 26px rgba(224,168,58,.28);
+  }
+  .sub{ color:var(--ink-dim); font-style:italic; font-size:14.5px; margin:0 0 1.4em; max-width:64ch;}
+  h2{
+    font-size:26px; color:var(--amber-glow); margin:2.4em 0 .5em; padding-bottom:.25em;
+    border-bottom:1px solid var(--line);
+  }
+  h3{ font-size:18px; color:var(--ink); margin:1.9em 0 .4em; letter-spacing:.01em; }
+  p{ margin:.7em 0; }
+  strong{ color:#fff; }
+  em{ color:var(--ink); }
+  a{ color:var(--amber); }
+  hr{ border:0; border-top:1px solid var(--line); margin:2.6em 0; }
+  ul,ol{ padding-left:1.3em; }
+  li{ margin:.32em 0; }
+  ul ul{ margin:.25em 0; }
+  code{
+    font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.85em;
+    background:var(--code); color:#d9c98f; padding:.12em .42em; border-radius:5px;
+    border:1px solid #2a3340;
+  }
+  blockquote{
+    margin:1.1em 0; padding:.5em 1.1em; border-left:3px solid var(--amber);
+    background:rgba(224,168,58,.06); color:var(--ink); border-radius:0 8px 8px 0;
+  }
+  blockquote p{ margin:.3em 0; }
+  table{
+    width:100%; border-collapse:collapse; margin:1.2em 0; font-size:14.5px;
+    display:block; overflow-x:auto;
+  }
+  th,td{ border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top; }
+  th{ background:var(--panel); color:var(--amber-glow); font-family:"Georgia",serif; letter-spacing:.02em; white-space:nowrap;}
+  tr:nth-child(even) td{ background:rgba(255,255,255,.018); }
+  .pill{ display:inline-block; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--bg2); background:var(--amber); padding:.15em .6em; border-radius:20px; font-weight:700;}
+  .pill.red{ background:var(--red); color:#1a0f0f;}
+  .lede{
+    border:1px solid var(--line); border-left:3px solid var(--amber);
+    background:rgba(224,168,58,.05); padding:14px 18px; border-radius:0 10px 10px 0; margin:1.4em 0;
+  }
+  .lede strong{ color:var(--amber-glow);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="doc-banner">BONES · Asset &amp; Build Manifest · companion to the design spec</div>
+
+  <h1>Asset &amp; Build Manifest</h1>
+  <p class="sub">Unity native app · Persona-5-style flat 2D presentation · premium 3D reserved for the dice roll. Scope here is <em>what assets exist, how they're authored, and how the dopamine machine is wired</em> — not gameplay code.</p>
+
+  <h2>0 · The one principle that organizes everything</h2>
+  <div class="lede">
+    <p><strong>2D is the world. 3D is the dice.</strong> Spend premium effort on the single moment the spec calls the heartbeat — pick-up → shake → one-die-at-a-time reveal → score. Everything else (street, wall, shadows, HUD, portraits, items, comic SFX, shop) is flat sprite/shader work that stays cheap, stylish, and on-model.</p>
+    <p><strong>Outcome-first dice</strong> (locked this session). Game logic decides each die's face after applying procs, cheats, and the Squeeze. The roll is <em>choreography to a known result</em> — never a free sim that determines the outcome. Physics is presentation. This is what makes the sequential reveal, the lingering final die, and the visible-cheat moment possible at all.</p>
+  </div>
+
+  <h2>1 · The dice — the only real 3D</h2>
+
+  <h3>1.1 Geometry</h3>
+  <ul>
+    <li><strong>Base die:</strong> one rounded-cube mesh, reused everywhere. Topology is irrelevant (it never deforms) — model it, grab a free one, or AI-generate it, all fine.</li>
+    <li><strong>Shape variants for rarity/upgrade tiers</strong> (distinct silhouettes = readability + collectibility). Keep to ~4–5 static meshes:
+      <ul>
+        <li>Standard cube — common</li>
+        <li>Heavier / worn-corner bevel — loaded / crooked</li>
+        <li>Faceted / gem-cut or elongated — trick / control (rare, precious)</li>
+        <li>Cracked / sigil-carved — curse</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>1.2 Surfaces — your wheelhouse (textures / materials)</h3>
+  <p>One mesh + many material sets = the entire visible dice catalog.</p>
+  <ul>
+    <li><strong>Face texture set</strong> — hand-drawn inked pips on bone-white, matching the noir line. 6 faces, plus the crooked <strong>"tell"</strong> the spec wants (glint, heavier ink shadow), baked or shader-driven.</li>
+    <li><strong>Body material</strong> — ink black, bone, gilded gold (Gilded Die), blood-marked (curse). Spot color carries meaning: amber = money/heat, red = danger.</li>
+    <li><strong>Special faces:</strong> Two-Face (only two values exist); Lucky Six / Snake Killer / Set-Bone (normal faces, flagged for the cheat-tell shader on proc).</li>
+  </ul>
+
+  <h3>1.3 Authoring &amp; import</h3>
+  <ul>
+    <li>Mesh → export <strong>FBX</strong> (or glTF) → drop in <code>Assets/</code>.</li>
+    <li>Face/body textures as PNG → assign to a custom <strong>toon/inked material</strong>.</li>
+    <li>A <strong>toon/ramp shader + outline</strong> beats realistic lighting here — it's what makes a 3D object sit convincingly on a 2D Sin City pavement. This is the single most important shader to get right.</li>
+  </ul>
+
+  <h3>1.4 The roll (outcome-first choreography)</h3>
+  <ul>
+    <li><strong>Controlled tumble (recommended):</strong> procedural or short pre-baked tumble guaranteed to settle on the target face. Snappy, art-directable, dramatic — fits noir over simulation realism.</li>
+    <li>Alternative: physics-with-correction (let it roll, settle to target). More "real," less controllable.</li>
+    <li><strong>Sequential reveal:</strong> dice resolve one at a time; the <strong>final die lingers</strong>. Trivial under outcome-first, near-impossible under free physics.</li>
+    <li><strong>Visible cheat:</strong> on a loaded-die proc, play the tell (glint, mid-tumble face-flip, ink-pulse) — the same beat that ticks Suspicion.</li>
+  </ul>
+
+  <h2>2 · The 2D world — sprites &amp; shaders (the bulk of the art)</h2>
+  <table>
+    <thead><tr><th>Group</th><th>Assets</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>The Spot (background)</td><td>Pavement plate, brick wall backstop, chalk lines, gutter, puddles</td><td>One hero scene, dressed variants per location (alley, stoop, under the El).</td></tr>
+      <tr><td>Contact shadows</td><td>Soft blob shadow sprite under each die</td><td>Cheap fake shadow that tracks the die. <strong>Not</strong> real-time 3D shadow casting — a blob reads better in this style and costs nothing.</td></tr>
+      <tr><td>HUD / meters</td><td>Debt + countdown, Bankroll, Heat meter, Suspicion %</td><td>Suspicion color-shifts to red; both always visible; the reveal never blocked by UI.</td></tr>
+      <tr><td>Portraits</td><td>Vito, the Collector, rotating marks</td><td>Static inked busts — no rig, no expressions. Swap whole sprites for reactions if desired.</td></tr>
+      <tr><td>Comic SFX</td><td><code>CLACK</code>, <code>SNAKE EYES!</code>, <code>BUST!</code>, <code>HEADCRACK!</code></td><td>Hand-lettered onomatopoeia <em>is</em> the juice. Sprites; size/spawn scales with payoff.</td></tr>
+      <tr><td>Items / dice cards</td><td>Icon art for every loaded / charm / trick / curse die + charms + favors</td><td>Balatro-style collectible cards. Where "super crazy amazing items" live.</td></tr>
+      <tr><td>Fence (shop) UI</td><td>Stall frame, price tags, buy / hone affordances</td><td>Randomized stock each night.</td></tr>
+      <tr><td>Flow screens</td><td>Title, Vito intro, run summary, game-over</td><td>Poster / marquee typography.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Atmosphere shaders (cheap, high-impact):</strong> film grain / halftone overlay, ink-bleed transitions, vignette, panel-fracture mask for streaks, rain/smoke particle layers. These sell the noir skin more than any single sprite.</p>
+
+  <h2>3 · The dopamine machine <span class="pill">Balatro / Cloverpit grade</span></h2>
+  <p>What makes it <em>feel</em> incredible. None of it needs 3D beyond the dice — it's layered 2D effects, audio, timing, and escalation. Build it as a <strong>tiered, stackable feedback system</strong> so intensity scales with stake × Heat × proc.</p>
+
+  <h3>3.1 Escalation tiers (the core Balatro/Cloverpit trick)</h3>
+  <table>
+    <thead><tr><th>Tier</th><th>Trigger (example)</th><th>What fires</th></tr></thead>
+    <tbody>
+      <tr><td>0 — clack</td><td>every die landing</td><td>single <code>CLACK</code>, dust puff, light haptic</td></tr>
+      <tr><td>1 — point win</td><td>ordinary win</td><td>SFX letters pop, coin-clink, bankroll ticks up, modest shake</td></tr>
+      <tr><td>2 — 4-5-6 / hot</td><td>jackpot face or mid-Heat</td><td>bigger lettering, ink-splatter, music swell, gold particle shower</td></tr>
+      <tr><td>3 — triple / high-Heat</td><td>top payouts, ×2.5+ Heat</td><td><strong>panel-shatter</strong>, screen flash, slow-mo on final die, bass-drop stinger, max particles</td></tr>
+      <tr><td><span class="pill red">BUST</span></td><td>failed Suspicion check</td><td>needle-scratch, red flood, frame cracks inward, everything goes cold</td></tr>
+    </tbody>
+  </table>
+  <p>The feel of escalation comes from tiers being <strong>clearly separated</strong> and <strong>earned</strong> — a high-Heat triple should look <em>categorically</em> different from a plain win, not just "more."</p>
+
+  <h3>3.2 Reusable juice library</h3>
+  <ul>
+    <li><strong>Number juice:</strong> payout counters that roll up with easing + overshoot; multiplier chips (<code>×2.5</code>) that stamp in and shake — the Balatro signature.</li>
+    <li><strong>Particles:</strong> gold-coin burst, ink splatter, landing dust, smoke drift, Heat embers that intensify with the meter.</li>
+    <li><strong>Screen effects:</strong> shake (scaled per tier), flash, ink/chromatic aberration on big hits, time-scale dip on the lingering final die.</li>
+    <li><strong>Panel system:</strong> frame fractures into comic panels on streaks — a mask/overlay that subdivides the screen.</li>
+    <li><strong>Audio layers:</strong> a music bed that adds stems as Heat climbs; diegetic clack/clink; tiered stingers. Adaptive audio does half the dopamine work — budget for it.</li>
+    <li><strong>Haptics:</strong> tiered vibration (you have this now that you left WebGL). Tick per clack, rumble on jackpot.</li>
+    <li><strong>Anticipation &gt; payoff:</strong> spend timing budget on the pause <em>before</em> the reveal — the shake and the lingering final die — not only the celebration after.</li>
+  </ul>
+
+  <h3>3.3 Upgradable dice — making leveling feel good</h3>
+  <p>Every upgrade die is <code>%-proc + levels (1→3+)</code> per the spec. Juice hooks:</p>
+  <ul>
+    <li><strong>Honing</strong> at the Fence gets its own detonation — sparks, the die "charging up," proc% ticking higher with a satisfying snap.</li>
+    <li><strong>A proc mid-roll</strong> is a mini-celebration: die glows its identity color, cheat tell plays, a small <code>LOADED!</code> pops. Because procs are chance-based, each is a small win on top of the win.</li>
+    <li><strong>Visual rarity tiers:</strong> shape + material + particle signature per tier (common → loaded → trick → curse) so a maxed crooked die <em>looks</em> dangerous and precious. Collectibility = dopamine.</li>
+  </ul>
+
+  <h3>3.4 Heat &amp; Suspicion as feedback (tension is dopamine too)</h3>
+  <ul>
+    <li><strong>Heat</strong> drives rising temperature: embers, warmer grade, music stems, faster shake. The screen feels <em>hotter</em> each consecutive win.</li>
+    <li><strong>Suspicion</strong> is dread: red creeps in, crowd murmur rises, the meter pulses. The <strong>bust</strong> is the anti-jackpot — make it hit as hard negatively as a triple hits positively. Contrast makes both land.</li>
+  </ul>
+
+  <h2>4 · Audio asset list</h2>
+  <ul>
+    <li><strong>Music:</strong> smoky upright jazz authored in <strong>stems/layers</strong> (base, +Heat1/2/3) for adaptive build. Vinyl crackle + rain ambience loop.</li>
+    <li><strong>Diegetic SFX:</strong> dice clack on concrete (several variants), coin clink, fist-shake rattle, cup pickup.</li>
+    <li><strong>Stingers:</strong> win, big win (4-5-6), jackpot (triple), the bust needle-scratch/bass-drop, honing snap, proc cue.</li>
+    <li><strong>UI:</strong> taps, drawer swipes, wager stepper ticks.</li>
+    <li><strong>Format:</strong> WAV for short SFX, compressed (OGG/MP3) for music. Set Unity load types accordingly (decompress-on-load for tiny SFX, streaming for music).</li>
+  </ul>
+
+  <h2>5 · Providing assets to Unity (mechanics)</h2>
+  <ol>
+    <li>Drop the file into <code>Assets/</code> — Unity auto-imports.</li>
+    <li>Configure <strong>import settings</strong> per type: Sprite → <em>Sprite (2D and UI)</em>, set PPU, pack into atlases; die FBX → no rig, assign toon material; audio → load type per §4; fonts → generate <strong>TextMeshPro</strong> assets from <code>.ttf/.otf</code> (one condensed display face, one clean numeric face).</li>
+    <li>Lock a <strong>folder structure &amp; naming convention up front</strong> and make the AI follow it. Suggested: <code>Assets/Art/{Dice,World,UI,SFX_Letters,Portraits}</code>, <code>Assets/Audio/{Music,SFX,Stingers}</code>, <code>Assets/Materials</code>, <code>Assets/Prefabs</code>, <code>Assets/Scripts</code>, <code>Assets/Scenes</code>.</li>
+  </ol>
+
+  <h2>6 · Suggested build order (prove the feel first)</h2>
+  <ol>
+    <li><strong>One die, one material, controlled tumble, flat plate</strong> — die lands on a logic-chosen face with a <code>CLACK</code> and a blob shadow. The whole game in miniature.</li>
+    <li><strong>The reveal sequence</strong> — multiple dice, one at a time, lingering final die, basic SFX-letter pop.</li>
+    <li><strong>Tiered juice (0→3)</strong> — the escalation system + number juice. Here it starts to feel like Balatro.</li>
+    <li><strong>Cee-lo scoring + Heat</strong> — banker logic, payout × Heat, streak temperature.</li>
+    <li><strong>Suspicion + bust</strong> — the dread counter and the anti-jackpot.</li>
+    <li><strong>3–4 upgrade dice + honing + cheat tell</strong> — proc juice, visual rarity, the Fence.</li>
+    <li><strong>A short run</strong> — nights, escalating collections, lose-if-broke/whacked.</li>
+  </ol>
+  <p>Get steps 1–3 feeling incredible on a real mid-range phone before building breadth.</p>
+
+  <h2>7 · AI: reliable vs verify</h2>
+  <ul>
+    <li><strong>Reliable:</strong> gameplay/scoring logic, the juice/tier state machine, number-juice tweening, UI wiring, audio triggering, outcome-first roll logic.</li>
+    <li><strong>Verify carefully:</strong> the toon/inked shader and compositing 3D dice on 2D, the Animator/tumble setup, camera/lighting for the dice layer, sprite-atlas/draw-call performance on device. The spots AI is shakiest — where your senior eye pays off.</li>
+  </ul>
+
+</div>
+</body>
+</html>

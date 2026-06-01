@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5711801c0ef14ca7b907996d93dcacf, type: 3}
+  m_Name: GameDatabase
+  m_EditorClassIdentifier: 
+  boneDie: {fileID: 11400000, guid: 01dca933b52e844d8ad94cbabea3aea1, type: 2}
+  allDice:
+  - {fileID: 11400000, guid: 3d11786fe3aef4808a523384336422a5, type: 2}
+  - {fileID: 11400000, guid: f16cf023a93de4602b637663d687cab3, type: 2}
+  - {fileID: 11400000, guid: a41c277a4679d42aa8de5cfd4e637377, type: 2}
+  allItems:
+  - {fileID: 11400000, guid: a4cd00e4c60224b49af4aaec25cf2b42, type: 2}
+  campaign: {fileID: 11400000, guid: 10e0930dc41a24b8e9facdc419621b72, type: 2}
+  juice: {fileID: 11400000, guid: a6438bdbb6f244bef934855c3ddd3624, type: 2}
+  startingUnlocks:
+  - snake_killer
+  - lucky_six
+  - gilded_die

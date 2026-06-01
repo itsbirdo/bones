@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="root" class="root">
+        <Style src="SpotUI.uss" />
+
+        <!-- HUD: concrete numbers only -->
+        <ui:VisualElement name="hud" class="hud">
+            <ui:VisualElement class="hud-block">
+                <ui:Label text="THE MARKER" class="hud-label" />
+                <ui:Label name="debt-value" text="$20" class="hud-value danger" />
+                <ui:Label name="deadline-value" text="3 throws left" class="hud-sub" />
+            </ui:VisualElement>
+            <ui:VisualElement class="hud-block center">
+                <ui:Label name="night-value" text="NIGHT 1" class="hud-night" />
+                <ui:Label name="heat-value" text="HEAT ×1.0" class="hud-heat" />
+            </ui:VisualElement>
+            <ui:VisualElement class="hud-block right">
+                <ui:Label text="BANKROLL" class="hud-label" />
+                <ui:Label name="bankroll-value" text="$18" class="hud-value money" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Center stage: the reveal happens behind this; result lettering pops here -->
+        <ui:VisualElement name="stage" class="stage">
+            <ui:Label name="sfx-letters" text="" class="sfx-letters" />
+            <ui:Label name="result-readout" text="" class="result-readout" />
+        </ui:VisualElement>
+
+        <!-- Bottom controls -->
+        <ui:VisualElement name="controls" class="controls">
+            <ui:VisualElement class="stake-row">
+                <ui:Button name="stake-down" text="–" class="stepper" />
+                <ui:VisualElement class="stake-display">
+                    <ui:Label text="STAKE" class="hud-label" />
+                    <ui:Label name="stake-value" text="$1" class="stake-amount" />
+                </ui:VisualElement>
+                <ui:Button name="stake-up" text="+" class="stepper" />
+            </ui:VisualElement>
+            <ui:Button name="throw-button" text="FLICK TO THROW" class="throw-button" />
+            <ui:VisualElement class="util-row">
+                <ui:Toggle name="lay-low" label="Lay Low" class="lay-low" />
+                <ui:Button name="bag-button" text="BAG" class="util-button" />
+                <ui:Button name="fence-button" text="FENCE" class="util-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Overlays -->
+        <ui:VisualElement name="overlay-title" class="overlay">
+            <ui:Label text="BONES" class="title-big" />
+            <ui:Label text="You owe Vito. Pay the marker, or end up under the El." class="title-sub" />
+            <ui:Button name="new-run" text="NEW RUN" class="overlay-button" />
+            <ui:Button name="resume-run" text="RESUME" class="overlay-button" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="overlay-collection" class="overlay hidden">
+            <ui:Label text="THE COLLECTION" class="title-big" />
+            <ui:Label name="collection-text" text="" class="title-sub" />
+            <ui:Button name="collection-continue" text="PAY UP" class="overlay-button" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="overlay-bag" class="overlay hidden">
+            <ui:Label text="THE BAG" class="title-big" />
+            <ui:Label text="Your cup — three dice. Tap a slot to swap in a die you own." class="title-sub" />
+            <ui:VisualElement name="bag-slots" class="fence-stock" />
+            <ui:Button name="bag-close" text="BACK TO THE ALLEY" class="overlay-button" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="overlay-fence" class="overlay hidden">
+            <ui:Label text="THE FENCE" class="title-big" />
+            <ui:Label name="fence-cash" text="" class="hud-sub" />
+            <ui:VisualElement name="fence-stock" class="fence-stock" />
+            <ui:Button name="fence-reroll" text="RE-ROLL" class="fence-reroll" />
+            <ui:Label text="HONE YOUR DICE" class="fence-section" />
+            <ui:VisualElement name="fence-hone" class="fence-stock" />
+            <ui:Button name="fence-close" text="BACK TO THE ALLEY" class="overlay-button" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="overlay-gameover" class="overlay hidden">
+            <ui:Label name="gameover-title" text="WHACKED" class="title-big danger" />
+            <ui:Label name="gameover-text" text="" class="title-sub" />
+            <ui:Button name="gameover-restart" text="ANOTHER RUN" class="overlay-button" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>
