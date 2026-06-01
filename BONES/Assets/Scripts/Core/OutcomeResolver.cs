@@ -15,7 +15,34 @@ namespace Bones.Core
         ForceFourFiveSix = 5,// whole-hand: manufacture a 4-5-6 (rare)
         ForceTriple = 6,     // whole-hand: manufacture a triple (rarest)
         PayoutCharm = 7,     // no face effect; boosts winnings (e.g. Gilded Die)
-        HeatCharm = 8,       // no face effect; amplifies Heat
+        HeatCharm = 8,       // no face effect; amplifies Heat (e.g. Streak Charm)
+        JackpotCharm = 9,    // no face effect; boosts winnings on a 4-5-6 or triple (e.g. Headcracker)
+
+        // --- Deferred face/hand effects (catalog §11). NO-OP today: the resolver does not read
+        // these yet, so a die carrying one behaves like a plain bone. Wire them up before shipping. ---
+        BumpParityEven = 10, // TODO: needs per-die parity-nudge in RollDie (Even Steven: odd face -> +1 even)
+        BiasOneOrSix = 11,   // TODO: needs per-die face-restriction in RollDie (Two-Face: only ever 1 or 6)
+        BumpLowFaces = 12,   // TODO: needs per-die +2 nudge for low faces in RollDie (High Roller: 1-3 up by +2)
+        CopyOtherDie = 13,   // TODO: needs cross-die read in ApplyWholeHand (Matchmaker: copy another die's face)
+
+        // --- Deferred control effects (§11). Need a re-roll / nudge / set-a-die input loop that
+        // does not exist yet. NO-OP today. ---
+        LockThroughReroll = 14, // TODO: needs re-roll system (The Cooler: lock this die through next re-roll)
+        RerollSelf = 15,        // TODO: needs re-roll system (Reroll Bone: re-roll this die once)
+        NudgeSelf = 16,         // TODO: needs post-land input (The Nudge: adjust this die +/-1 after it lands)
+        RerollHand = 17,        // TODO: needs re-roll system (Mulligan Cup: re-roll the whole hand once)
+        ReviveInstantLoss = 18, // TODO: needs re-throw system (Second Wind: 1-2-3 -> a fresh throw)
+        SetFace = 19,           // TODO: needs set-a-die input (Set-Bone: set this die to any chosen face)
+
+        // --- Deferred charm effects (§11). Need refund / point-bump economy hooks. NO-OP today. ---
+        RefundOnLoss = 20,  // TODO: needs loss-refund hook in EconomyService (Rabbit's Die)
+        PointSharp = 21,    // TODO: needs point-value bump in settle (Point Sharp: point pays as one higher)
+
+        // --- Deferred curse effects (§11). Need a downside/penalty system. NO-OP today. ---
+        ForceBigStake = 22,    // TODO: needs stake-floor enforcement (Gambler's Curse)
+        DoubleSwing = 23,      // TODO: needs double-win/double-loss settle (All-or-Nothing)
+        SnakeEyesPact = 24,    // TODO: needs payout-mult + any-1-kills-throw (Snake Eyes Pact)
+        BloodyKnuckles = 25,   // TODO: needs no-suspicion-decay + faster Heat (Bloody Knuckles)
     }
 
     /// <summary>A single die in the cup, with its effect resolved to the current level's proc%.</summary>

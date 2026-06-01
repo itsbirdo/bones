@@ -282,6 +282,19 @@ namespace Bones.UI
                 row.Add(label); row.Add(swap);
                 _bagSlots.Add(row);
             }
+
+            // Owned favors / items, read-only, with remaining charges (e.g. "Lookout  x2").
+            foreach (var owned in game.Run.ownedItems)
+            {
+                var item = game.Database.FindItem(owned.itemId);
+                if (item == null) continue;
+                var row = new VisualElement(); row.AddToClassList("fence-item");
+                var label = new Label($"{item.displayName}  x{owned.chargesRemaining}");
+                label.style.flexGrow = 1f;
+                label.style.whiteSpace = WhiteSpace.Normal;
+                row.Add(label);
+                _bagSlots.Add(row);
+            }
             Show(_overlayBag);
         }
 
