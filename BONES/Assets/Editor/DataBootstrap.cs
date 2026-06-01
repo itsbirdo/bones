@@ -35,6 +35,12 @@ namespace Bones.Editor
             var gildedDie = MakeDie("gilded_die", "Gilded Die", DieTier.Charm, DieEffect.PayoutCharm,
                 "Pays a little extra when the night goes your way.", new[] { 0.30f, 0.40f, 0.50f }, 0f, 8, 3);
 
+            var streakCharm = MakeDie("streak_charm", "Streak Charm", DieTier.Charm, DieEffect.HeatCharm,
+                "Keeps the table warm so a hot hand runs hotter.", new[] { 0.30f, 0.40f, 0.50f }, 0f, 8, 3);
+
+            var headcracker = MakeDie("headcracker", "Headcracker", DieTier.Charm, DieEffect.JackpotCharm,
+                "When the bones hit big (4-5-6 or a triple), it cracks the pot wide open.", new[] { 0.40f, 0.55f, 0.70f }, 0f, 9, 3);
+
             // --- Item (favor) ---
             var lookout = MakeItem("lookout", "Lookout", ItemKind.Favor, Durability.LimitedUse,
                 "A kid on the corner whistles when the heat's near.", "suspicion_reduce", 0.02f, 2, 10);
@@ -54,11 +60,11 @@ namespace Bones.Editor
             // --- The wired database ---
             var db = ScriptableObject.CreateInstance<GameDatabase>();
             db.boneDie = bone;
-            db.allDice.AddRange(new[] { snakeKiller, luckySix, gildedDie });
+            db.allDice.AddRange(new[] { snakeKiller, luckySix, gildedDie, streakCharm, headcracker });
             db.allItems.Add(lookout);
             db.campaign = campaign;
             db.juice = juice;
-            db.startingUnlocks = new System.Collections.Generic.List<string> { "snake_killer", "lucky_six", "gilded_die" };
+            db.startingUnlocks = new System.Collections.Generic.List<string> { "snake_killer", "lucky_six", "gilded_die", "streak_charm", "headcracker" };
             EnsureDir("Assets/Resources");
             CreateAsset(db, "Assets/Resources/GameDatabase.asset"); // in Resources so GameController can auto-load it
             // Remove any stale copy from the old location.
@@ -71,7 +77,7 @@ namespace Bones.Editor
             Debug.Log("[BONES] MVP data generated under Assets/Data. Select GameDatabase.asset.");
             EditorUtility.DisplayDialog("BONES",
                 "MVP data generated under Assets/Data:\n" +
-                "• 4 dice (bone, snake_killer, lucky_six, gilded_die)\n" +
+                "• 6 dice (bone, snake_killer, lucky_six, gilded_die, streak_charm, headcracker)\n" +
                 "• Lookout favor\n" +
                 "• Nights 1–3 + Campaign\n" +
                 "• JuiceTiers + GameDatabase (wired)\n\n" +

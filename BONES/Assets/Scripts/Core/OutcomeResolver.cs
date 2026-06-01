@@ -15,7 +15,8 @@ namespace Bones.Core
         ForceFourFiveSix = 5,// whole-hand: manufacture a 4-5-6 (rare)
         ForceTriple = 6,     // whole-hand: manufacture a triple (rarest)
         PayoutCharm = 7,     // no face effect; boosts winnings (e.g. Gilded Die)
-        HeatCharm = 8,       // no face effect; amplifies Heat
+        HeatCharm = 8,       // no face effect; amplifies Heat (e.g. Streak Charm)
+        JackpotCharm = 9,    // no face effect; boosts winnings on a 4-5-6 or triple (e.g. Headcracker)
     }
 
     /// <summary>A single die in the cup, with its effect resolved to the current level's proc%.</summary>

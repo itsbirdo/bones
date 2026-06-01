@@ -332,7 +332,17 @@ namespace Bones
 
             double delta = EconomyService.Settle(round.Outcome, stake, round.Banker.Result, winsBefore, _payouts);
             bool win = round.Outcome == GameOutcome.BankerWin;
-            if (win) delta *= CharmPayoutMultiplier();
+            if (win)
+            {
+                // Roll each cup charm's proc here (RNG stays in the controller), then let the pure
+                // CharmService decide the charm-adjusted Heat and payout multiplier for this win.
+                var charm = CharmService.Apply(heat, round.Banker.Result, ProccedCharms());
+                // Re-base the win off the charm-adjusted Heat (Settle used the base Heat), then scale
+                // by the payout multiplier. PayoutCharm-only behaviour stays identical to before.
+                if (heat > 0) delta *= charm.Heat / heat;
+                delta *= charm.PayoutMultiplier;
+                heat = charm.Heat; // the report shows the Heat actually applied to this game
+            }
 
             bool busted = false;
             if (win)
@@ -502,20 +512,23 @@ namespace Bones
             }
         }
 
-        /// <summary>Payout charms (e.g. Gilded Die) add a multiplier on a win when they proc.</summary>
-        private double CharmPayoutMultiplier()
+        /// <summary>
+        /// Roll each cup charm's proc and return the effects that fired. Charms (PayoutCharm,
+        /// HeatCharm, JackpotCharm) carry no face effect; CharmService turns the fired list into
+        /// the adjusted Heat and payout multiplier. RNG lives here so CharmService stays pure.
+        /// </summary>
+        private System.Collections.Generic.List<DieEffect> ProccedCharms()
         {
-            double mult = 1.0;
+            var fired = new System.Collections.Generic.List<DieEffect>(3);
             for (int i = 0; i < 3; i++)
             {
                 var def = database.FindDie(Run.cup[i]);
-                if (def != null && def.effect == DieEffect.PayoutCharm)
-                {
-                    if (_rng.Chance(def.ProcChanceAtLevel(LevelOf(def.id))))
-                        mult += 0.5; // +50% (manifest: Gilded Die)
-                }
+                if (def == null) continue;
+                bool isCharm = def.effect is DieEffect.PayoutCharm or DieEffect.HeatCharm or DieEffect.JackpotCharm;
+                if (isCharm && _rng.Chance(def.ProcChanceAtLevel(LevelOf(def.id))))
+                    fired.Add(def.effect);
             }
-            return mult;
+            return fired;
         }
     }
 }
