@@ -27,13 +27,13 @@ namespace Bones.Editor
                 "A plain street die. Honest. Mostly.", new[] { 0f }, 0f, 0, 1);
 
             var snakeKiller = MakeDie("snake_killer", "Snake Killer", DieTier.Loaded, DieEffect.KillInstantLoss,
-                "Eats a 1-2-3 before the marks ever see it.", new[] { 0.35f, 0.50f, 0.65f }, 0.012f, 12, 3);
+                "Eats a 1-2-3 before the marks ever see it.", new[] { 0.35f, 0.50f, 0.65f }, 0.012f, 6, 3);
 
             var luckySix = MakeDie("lucky_six", "Lucky Six", DieTier.Loaded, DieEffect.BiasSix,
-                "Wants to land on six. Always has.", new[] { 0.30f, 0.42f, 0.55f }, 0.015f, 14, 3);
+                "Wants to land on six. Always has.", new[] { 0.30f, 0.42f, 0.55f }, 0.015f, 7, 3);
 
             var gildedDie = MakeDie("gilded_die", "Gilded Die", DieTier.Charm, DieEffect.PayoutCharm,
-                "Pays a little extra when the night goes your way.", new[] { 0.30f, 0.40f, 0.50f }, 0f, 16, 3);
+                "Pays a little extra when the night goes your way.", new[] { 0.30f, 0.40f, 0.50f }, 0f, 8, 3);
 
             // --- Item (favor) ---
             var lookout = MakeItem("lookout", "Lookout", ItemKind.Favor, Durability.LimitedUse,

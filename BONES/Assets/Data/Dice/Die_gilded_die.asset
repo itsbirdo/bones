@@ -22,7 +22,7 @@ MonoBehaviour:
   - 0.4
   - 0.5
   suspicion: 0
-  basePrice: 16
+  basePrice: 8
   maxLevel: 3
   meshOverride: {fileID: 0}
   materialOverride: {fileID: 0}
