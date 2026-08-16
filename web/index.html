@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BONES (playtest)</title>
+<style>
+  /* Bare-bones playtest skin. Not the art direction; just legible noir-ish defaults. */
+  :root { --ink:#181512; --paper:#e8e0cf; --amber:#d4a838; --red:#be282c; --dim:#8a8273; }
+  * { box-sizing: border-box; }
+  body { background:var(--ink); color:var(--paper); font-family:"Courier New",monospace;
+         margin:0; display:flex; justify-content:center; }
+  #app { width:100%; max-width:520px; min-height:100vh; padding:14px; display:flex; flex-direction:column; }
+  h1 { letter-spacing:.3em; text-align:center; margin:.3em 0; }
+  .dim { color:var(--dim); } .amber { color:var(--amber); } .red { color:var(--red); }
+  .hud { display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px 12px;
+         border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:8px; font-size:14px; }
+  .dicezone { min-height:210px; }
+  .dicerow { font-size:72px; letter-spacing:.18em; min-height:84px; line-height:1.1; }
+  .dicerow.mark { font-size:48px; min-height:58px; line-height:1.1; }
+  .shout { font-size:26px; font-weight:bold; color:var(--amber); min-height:34px; }
+  .shout.bad { color:var(--red); }
+  .log { font-size:14px; min-height:40px; white-space:pre-line; }
+  button { background:#2a251f; color:var(--paper); border:1px solid #555; font-family:inherit;
+           font-size:15px; padding:8px 14px; cursor:pointer; margin:2px; }
+  button:disabled { opacity:.35; cursor:default; }
+  button.big { font-size:18px; padding:14px 20px; width:100%; }
+  button.danger { border-color:var(--red); }
+  .controls { margin-top:auto; padding-top:10px; border-top:1px solid #333; }
+  .stakebar { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
+  .overlay { position:fixed; inset:0; background:rgba(10,8,6,.96); overflow-y:auto;
+             display:flex; justify-content:center; }
+  .overlay>div { width:100%; max-width:520px; padding:16px; }
+  .card { border:1px solid #444; padding:8px 10px; margin:6px 0; font-size:14px; }
+  .card b { color:var(--amber); }
+  .slot { display:inline-block; border:1px dashed #555; padding:6px 10px; margin:3px; min-width:110px;
+          cursor:pointer; font-size:13px; }
+  .slot.filled { border-style:solid; border-color:var(--amber); }
+  .toast { color:var(--amber); font-size:13px; margin:4px 0; }
+  .teach { color:var(--amber); font-style:italic; font-size:13px; min-height:18px; margin:4px 0; opacity:.9; }
+  .devbox { font-size:12px; color:var(--dim); border-top:1px dotted #333; margin-top:6px; padding-top:4px; }
+  .devtable { border-collapse:collapse; width:100%; }
+  .devtable td { padding:1px 8px 1px 0; }
+  .devtable td:nth-child(even) { color:var(--paper); }
+  .center { text-align:center; }
+  .story { font-size:15px; line-height:1.5; white-space:pre-line; margin:18px 0; }
+  label { font-size:14px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<!-- bump ?v= when scripts change so stale browser caches never serve old code -->
+<script src="engine.js?v=12"></script>
+<script src="app.js?v=12"></script>
+</body>
+</html>

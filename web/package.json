@@ -1,0 +1,13 @@
+{
+  "name": "bones-web-playtest",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BONES web playtest build: game, verification checks, and balance Monte Carlo.",
+  "scripts": {
+    "dev": "python3 serve.py 8000",
+    "sim": "node sim.js",
+    "ui": "node ui-smoke.js",
+    "mc": "node montecarlo.js",
+    "mc:big": "node montecarlo.js 2500 20"
+  }
+}
