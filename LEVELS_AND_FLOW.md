@@ -81,7 +81,7 @@ flowchart LR
 
 - **Night Intro** — a comic panel: the Collector names tonight's number and the deadline; any newly available game/feature is introduced. Sets the target the player is playing toward.
 - **The Alley (earn)** — a hub where you choose **how much to stake** across your **3 games this night** (each a Cee-lo round). How you spend those three throws — stake sizing and how crooked to play — is the core strategic decision of the level.
-- **The Fence (spend)** — reachable from the hub (typically between/after games): buy dice, hone them, buy charms and limited-use favors. Stock is randomized (roguelike). You can **pay to re-roll the stock** — cheap the first time each night, pricier with every re-roll that night (resets next night). Hunt the build you want, or save the cash for the Collection (spec §8.2).
+- **The Fence (spend)** — reachable from the hub (typically between/after games): buy dice, charms and limited-use favors. Stock is randomized (roguelike). You can **pay to re-roll the stock** — cheap the first time each night, pricier with every re-roll that night (resets next night). Hunt the build you want, or save the cash for the Collection (spec §8.2).
 - **The Collection (deadline)** — the Collector arrives. Pay the demanded sum from bankroll (surplus stays as bankroll for next night's Fence). **Meet it → next Night. Miss it → whacked**, unless you burn a limited-use reprieve.
 
 ---
@@ -127,12 +127,12 @@ The campaign — Act 1, **"The Marker"** — runs Nights 1→7, ending in **The 
 
 | Night | Debt due | Games | Opponent | What's new / what changes | Target time |
 |---|---|---|---|---|---|
-| **1** | $20 | 3 | The Nervous Rookie | Core loop · the reveal · Heat · the Collection & the whack · **you're favored** · **Fence unlocks after game 1 (first run only)** | 3–5 min |
-| **2** | $55 | 3 | The Rookie | First loaded die · **Suspicion** · Lay Low | 5–7 min |
-| **3** | $140 | 3 | The Regular | **Limited-use items** · the odds start to tighten (Squeeze) | 6–8 min |
-| **4** | $375 | 3 | The Carnival Barker | Bigger stakes · charms matter · odds ~even | 7–10 min |
-| **5** | $950 | 3 | The Old Gambler | Real pressure · deeper builds · **odds turn unfavored** | 8–12 min |
-| **6** | $2,400 | 3 | The Dock Boss | Lean on cheats + Heat · brutal odds | 10–15 min |
+| **1** | $15 *(schedule MC-tuned 2026-06: 15/30/55/100/170/290, seed $40)* | 3 | The Nervous Rookie | Core loop · the reveal · Heat · the Collection & the whack · **you're favored** · **Fence unlocks after game 1 (first run only)** | 3–5 min |
+| **2** | $30 | 3 | The Rookie | First loaded die · **Suspicion** · Lay Low · the marks start cheating back (40% honest) | 5–7 min |
+| **3** | $55 | 3 | The Regular | **Limited-use items** · the odds keep tightening (Squeeze) | 6–8 min |
+| **4** | $100 | 3 | The Carnival Barker | Bigger stakes · charms matter | 7–10 min |
+| **5** | $170 | 3 | The Old Gambler | Real pressure · deeper builds · point builds peak here | 8–12 min |
+| **6** | $290 | 3 | The Dock Boss | Lean on cheats + Heat · brutal odds (21% honest) | 10–15 min |
 | **7 — The Reckoning** | no tribute — the **IOU** is the prize | 3 | **VITO CARBONE** | **3 Cee-lo games vs Vito · win 2 of 3** · you bank · **Suspicion off** (both cheat openly) · Vito heavily loaded (~15%) · 3rd game hardest · **win = beat the game** (spec §6.5) | 8–12 min |
 
 **Onboarding by discovery — no tutorial.** On a *constant* Cee-lo base, each early night quietly surfaces one new **system** (the Fence, Suspicion, limited-use items) — one thing at a time, learned by **playing**, never via pop-ups or rules screens. Difficulty then rises through the **debt** and **The Squeeze**, not through new games.
@@ -161,7 +161,7 @@ The flow depends on knowing exactly what persists across each boundary.
 
 | State | Scope | Resets / ends when |
 |---|---|---|
-| **Bankroll** | whole run | new run (start at $0) |
+| **Bankroll** | whole run | new run (re-seeded at $40, +$10 float each new night — ECONOMY §6) |
 | **Owned dice & cup loadout** | whole run | new run *(meta-unlocked dice become re-selectable)* |
 | **Persistent items [P]** | whole run | new run *(unless meta-permanent)* |
 | **Limited-use items [L]** | until charges spent | consumed, or run end |
@@ -183,7 +183,7 @@ Between and within levels, the meaningful decisions:
 - **Stake sizing:** how much to put up each of the three games — bet big into a hot streak to clear the debt, or protect a thin bankroll. The central risk dial.
 - **The Suspicion gamble:** how crooked to play, when to Lay Low, when to spend a Favor — knowing it builds all night across your 3 games.
 - **Limited-use timing:** hoard clutch consumables, or spend now to make a tight Collection?
-- **Fence priorities:** persistent backbone vs limited-use stockpile; hone existing dice vs buy new; and **whether to pay to re-roll the stock** (escalating cost per night) chasing a better build — or keep that cash for the Collection.
+- **Fence priorities:** persistent backbone vs limited-use stockpile; which of the 3 cup slots each new die displaces; and **whether to pay to re-roll the stock** (escalating cost per night) chasing a better build — or keep that cash for the Collection.
 - **Route risk:** scrape past tonight's debt safely, or over-earn to bankroll a war chest for the brutal later nights? (Banking surplus is how you survive the escalation.)
 
 ---
@@ -262,7 +262,7 @@ Your brief: *short & punchy early, scaling to 1 hr+ as the player improves (Clov
 ## 12. Open questions
 
 1. **Games-per-night curve:** locked at **3** for now (your call). Open whether later acts ever step it up (4–5) — flat 3 keeps the escalating demand harder and runs swingier, which suits the high-luck identity.
-2. **Stake limits:** is there a min/max stake per game, and does the max scale with bankroll or the night's demand? (Stake sizing is the central risk dial, so its bounds matter.)
+2. ~~**Stake limits**~~ **Resolved (2026-06, ECONOMY §6):** min stake $1 (or sit out), max stake = your whole bankroll.
 3. **Fence availability:** between every game, or only once per night (a single shopping beat)? (Leaning: anytime from the hub, but stock refreshes once per night.)
 4. **Surplus carry:** does *all* leftover bankroll carry to the next night, or does Vito's interest skim a cut? (Skimming surplus would tighten the economy and discourage hoarding.)
 5. **Whack saves:** how many limited-use reprieves can exist at once, and do they fully cover a missed Collection or only partially?
