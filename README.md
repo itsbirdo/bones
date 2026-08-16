@@ -25,7 +25,7 @@ It's [Cee-lo](./ceelo.md), a fast three-dice street game, wrapped in a Balatro-s
 - **Cheat to survive:** load dice, palm charms, and read the heat; honest play won't beat the final night.
 - **Ride your Heat:** consecutive wins stack a payout multiplier. One loss wipes it. Press or bank?
 - **Watch your Suspicion:** every crooked die nudges a rare, brutal bust closer. Lay low, or push your luck.
-- **Build a run at the Fence:** a roguelike shop of random dice and charms; hone your loadout between nights.
+- **Build a run at the Fence:** a roguelike shop of random dice and charms; shape your loadout between nights.
 - **Seven nights, one way out:** escalating debt, no safety net. Beat Vito at the Reckoning, or end up in the river.
 
 ## Quick start
@@ -56,7 +56,7 @@ Each night, put up a stake and **flick the dice in** (or tap *Flick to Throw*). 
 - Anything else sets a **point** (a pair plus an odd die); the mark counter-rolls to beat it.
 - Win streaks build **Heat** (bigger payouts); cheating builds **Suspicion** (rare busts).
 
-Between throws, spend your winnings at **The Fence** (buy and hone dice) and set your three-die loadout in **The Bag**. Miss a Collection or run out of cash and the run ends. Survive to Night 7, beat Vito best-of-three, and burn the marker.
+Between throws, spend your winnings at **The Fence** (buy dice and charms) and set your three-die loadout in **The Bag**. Miss a Collection or run out of cash and the run ends. Survive to Night 7, beat Vito best-of-three, and burn the marker.
 
 ## How it works
 
@@ -72,6 +72,7 @@ The art is being developed in a separate tool, so the current build uses **place
 
 | Path | What |
 |------|------|
+| [`web/`](./web/) | **Playable web build** for flow/feel testing (open `web/index.html`; tuning sandbox, see its README) |
 | [`BONES/`](./BONES/) | The Unity project (code, data, tests, editor tools) |
 | [`GAME_DESIGN_SPEC.md`](./GAME_DESIGN_SPEC.md) | The full design: rules, run structure, systems |
 | [`ECONOMY.md`](./ECONOMY.md) · [`LEVELS_AND_FLOW.md`](./LEVELS_AND_FLOW.md) · [`ACHIEVEMENTS.md`](./ACHIEVEMENTS.md) | Money & balance · progression · unlocks |

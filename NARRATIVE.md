@@ -36,7 +36,7 @@ Buttons: **NEW RUN** · **RESUME**
 >
 > **VITO.** Relax. I'm reasonable. We'll call it a marker.
 >
-> *He slides a slip of paper across the felt. The ink's still wet.*
+> *He slides a slip of paper across the desk. The ink's still wet.*
 >
 > **VITO.** Word is you're good with the bones. So you'll roll. Every night my Collector comes around. You pay what's on the marker, or we have a different kind of conversation.
 >
@@ -91,7 +91,7 @@ Button: **FACE HIM**
 Mid-match barks:
 - After your win: *Vito smiles with his mouth only. "Lucky."*
 - After his win: *He gathers the dice without a word. The men shift in the dark.*
-- Deciding game (1–1): *Last roll. Everything's on the felt: the money, the marker, you.*
+- Deciding game (1–1): *Last roll. Everything's on the concrete: the money, the marker, you.*
 
 ---
 
@@ -122,13 +122,12 @@ Button: **ANOTHER RUN**
 | The Bag | THE BAG: *your cup, your dice, your edge.* |
 | The Fence | THE FENCE: *he doesn't ask where they came from.* |
 | Re-roll stock | SHOW ME SOMETHING ELSE |
-| Hone a die | HONE |
 
 Result shouts (sized/loud per stake × Heat):
 - Point win: **PAID.**
 - 4-5-6: **HEADCRACK!**
 - Triple: **TRIPS!** · 6-6-6: **DEVIL'S BONES!**
-- 1-2-3 (instant loss): **SNAKE EYES.**
+- 1-2-3 (instant loss): **ONE-TWO-THREE.** *(not "snake eyes": that means double 1s, and dice players will notice)*
 - Caught cheating (bust): **BUSTED!** *He saw the bones turn. Pot's gone. Play it cool.*
 - Hot streak (Heat): *You're hot.*
 
@@ -140,6 +139,30 @@ Result shouts (sized/loud per stake × Heat):
 - **Carnival barker:** *Talks the whole time. The patter's the tell.*
 - **Old gambler:** *He's seen every trick. Including yours. Especially yours.*
 - **Dock boss:** *Cash in a fist like a brick. Doesn't blink when he loses.*
+
+---
+
+## 9. The Teach  *(first-run diegetic tutorial; system rules in spec §12.9)*
+
+One line each, fired once per account at the moment the rule first matters. Never a popup, never
+"TIP:". Speaker noted per beat; the mark's lines read as table talk, the narrator's as scene text.
+
+| # | Beat | Speaker | Line |
+|---|---|---|---|
+| 1 | `first_night` | narrator | *Three throws a night. At dawn the Collector takes what's owed. Come up short and you swim.* |
+| 2 | `first_stake` | the mark | *"Whatever you put down, I cover. Win, it comes back double. Lose, it's mine."* |
+| 3 | `first_nothing` | narrator | *Nothing scores. Throw until the bones say something.* |
+| 4 | `first_point` | the mark | *"A pair and a loose bone. The loose one's your point. Now I roll to beat it."* |
+| 5 | `first_instant` | narrator | *Four-five-six, or three of a kind. Nobody rolls against that. The pot's yours on the spot.* |
+| 6 | `first_123` | narrator | *One-two-three. The bones bury you themselves. No counter-roll, no argument.* |
+| 7 | `first_tie` | the mark | *"Same point. Ties go to the bank, and you're the bank. Tonight and every night."* |
+| 8 | `first_heat` | narrator | *You're hot. Hot money pays bigger. One loss and the streak's ash.* |
+| 9 | `first_fence` | narrator | *A fence has set up under the lamppost. He sells edges. He doesn't ask questions.* |
+| 10 | `first_crooked` | narrator | *Crooked bones in the cup. Play them and the alley starts watching your hands.* |
+| 11 | `first_laylow` | narrator | *LAY LOW plays this hand straight. Straight hands cool the alley off.* |
+
+Always-on companion line (readability, not tutorial): when both sides hold points, the settle
+line compares them: *His 4 against your 5.*
 
 ---
 

@@ -387,13 +387,16 @@ namespace Bones
         }
 
         /// <summary>
-        /// The standing bust chance for the equipped loadout, as a percent (0–100). Ignores Lay Low so the
-        /// player always sees their build's risk. Suspicion is OFF on the Reckoning night, so returns 0 there.
+        /// The standing bust chance, as a percent (0–100): what the player would face if the NEXT
+        /// game is played crooked and won (the night's accrued suspicion plus this loadout's
+        /// accrual, minus favors). Ignores Lay Low so the player always sees their build's risk.
+        /// Suspicion is OFF on the Reckoning night, so returns 0 there.
         /// </summary>
         public double CurrentBustPercent()
         {
             if (Run == null || IsReckoning) return 0.0;
-            return SuspicionService.BustChance(SummedSuspicion(), FavorReduction(), false) * 100.0;
+            double afterNextGame = SuspicionService.Accrue(Night.accruedSuspicion, SummedSuspicion());
+            return SuspicionService.BustChance(afterNextGame, FavorReduction(), false) * 100.0;
         }
 
         /// <summary>Play one Cee-lo round at the given stake. Returns the fully-resolved report.</summary>
@@ -432,12 +435,23 @@ namespace Bones
             bool busted = false;
             // Suspicion is OFF during the Reckoning: both sides cheat openly, no bust checks (spec §6.5).
             // Cheats still work; we just never roll the bust and never spend Favor charges.
-            if (win && !reckoning)
+            if (!reckoning)
             {
-                double bust = SuspicionService.BustChance(SummedSuspicion(), FavorReduction(), layLow);
-                busted = SuspicionService.RollBust(_rng, bust);
-                // A bust check actually occurred (winning settle, not laying low): spend favor charges.
-                if (!layLow) ConsumeSuspicionFavors();
+                // Suspicion accumulates across the night (spec §9.2): a crooked game adds to the
+                // night's accrued total; a clean game (Lay Low, or an honest cup) lets it cool.
+                bool playedClean = layLow || SummedSuspicion() <= 0.0;
+                Night.accruedSuspicion = playedClean
+                    ? SuspicionService.DecayOnClean(Night.accruedSuspicion)
+                    : SuspicionService.Accrue(Night.accruedSuspicion, SummedSuspicion());
+
+                // The bust is rolled against the ACCRUED total when a crooked game settles on a win.
+                if (win && !playedClean)
+                {
+                    double bust = SuspicionService.BustChance(Night.accruedSuspicion, FavorReduction(), layLow);
+                    busted = SuspicionService.RollBust(_rng, bust);
+                    // A bust check actually occurred: spend favor charges.
+                    ConsumeSuspicionFavors();
+                }
             }
 
             // Apply to bankroll.

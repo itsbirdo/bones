@@ -9,20 +9,20 @@ Not every die, charm, or trinket is available from the start. New items are **un
 - **Account-level & permanent.** Earned once, kept forever across all runs.
 - **Unlocking ≠ owning.** An unlock only adds the item to the pool the **Fence can offer** (5 shown at a time). You still have to be *offered* it and **buy it with cash**. Unlocks widen your *possible* builds; they don't hand you power. (Research: meta-progression should grant **options, not raw strength**, so difficulty stays meaningful.)
 - **Earned mid-run, buyable next round.** Many achievements **fire the moment they happen mid-round** — hit a big pot, roll a 6-6-6, bust, etc. The reward becomes purchasable **from the next round onward** (you can't grab it the instant it pops mid-game), and stays available forever after.
-- **Not all achievements are "good."** Plenty are neutral or outright **failures** — *Died 10 times*, *Busted again*, *Went broke* — and they still grant items. Losing *is* progression: a bad run still ends with something new for the next one.
+- **Not all achievements are "good."** Plenty are neutral or outright **failures** — *Got busted*, *Went broke*, *Got whacked* — and they still grant items. Losing *is* progression: a bad run still ends with something new for the next one.
 - **Discovery, no nags.** Unlocks land as a quick noir beat ("a fence slides you a new pair of bones…"), not a popup. Browse what you've unlocked in the Bag.
 
 ---
 
-## Starting core pool (a new account's first 3)
+## Starting core pool (a new account's first 3 — decided 2026-06-12)
 
-Deliberately tiny — just enough to start cheating (you must cheat to win, ECONOMY §1). This is **only the very-first-time set**; the pool grows steadily as you unlock.
+Deliberately small and **deliberately low-powered**: one mild lean, one modest charm, one favor — enough to taste each system, never enough to feel armed. The real cheats arrive fast through the first run's natural beats (first loss, fifth game). This is **only the very-first-time set**; the pool grows steadily as you unlock.
 
 | Type | Item | Why it's a starter |
 |---|---|---|
-| Loaded | **Snake Killer** | dodging 1-2-3 is the most intuitive first cheat |
-| Loaded | **Lucky Six** | the readable "make big numbers" cheat |
+| Loaded | **Shaved Edge** | the gentlest lean in the catalog — a first taste of crooked, nothing more |
 | Charm | **Gilded Die** | a clean payout boost — shows charms aren't cheats, and helps wins pay |
+| Favor | **Lookout** | bust management from day one — the player meets the Suspicion valve early |
 
 Everything else is locked and earned below. (Your honest default **Bone dice** fill any empty cup slots for free.)
 
@@ -30,25 +30,26 @@ Everything else is locked and earned below. (Your honest default **Bone dice** f
 
 ## Unlock table
 
-Conditions are **tuning placeholders** (exact thresholds to balance later). Grouped by flavour.
+Conditions are **tuning placeholders** (exact thresholds to balance later; the live values are in `web/engine.js`, which this table mirrors — 2026-08 sync). Grouped by flavour.
 
 ### Early staples (fast, fill out the basics from the 3-item core)
 | Achievement | Unlocks | Notes |
 |---|---|---|
-| **Play your 3rd game** | **Shaved Edge** | a gentle extra cheat, almost immediately |
-| **Make your first Fence purchase** | **Pawn Ticket** | basic emergency cash |
-| **Survive your first night** | **Lookout** | reward clearing a Collection; start managing bust % |
+| **Lose your first game** | **Snake Killer** | you met the bottom; learn to dodge 1-2-3 (the intuitive first real cheat) |
+| **Play your 3rd game** | **Even Steven** | a gentle extra cheat, almost immediately |
+| **Play your 5th game** | **Lucky Six** | the readable "make big numbers" cheat, earned within run one |
+| **Play your 8th game** | **Cold Read** | you're a regular now; start reading the marks (and your own odds) |
+| **Win your first game** | **Streak Charm** | a first pot, and a reason to chase the next one |
+| **Win 3 games (lifetime)** | **Hot Hand** | they start calling you the hot hand |
+| **Make your first Fence purchase** | **Pawn Ticket** | basic emergency cash (he buys back, too) |
 | **Use a re-roll for the first time** | **Reroll Bone** | a taste of direct control |
-| **Win a game with no cheat dice equipped** | **Even Steven** | the mildest loaded die |
 | **Lose a game to 1-2-3** (auto-loss) | **Second Wind** | dodge the auto-loss next time |
-| **Lose your first single game** | **Rabbit's Die** | a refund cushion |
-| **Survive 3 nights in one run** | **Rabbit's Foot** | a deeper safety net |
+| **Lose 5 games (lifetime)** | **Rabbit's Die** | a refund cushion for the punch-drunk |
 
 ### First-times (early, generous — teach the systems)
 | Achievement | Unlocks | Notes |
 |---|---|---|
 | **First death** (any loss — broke or whacked) | **Two-Face** | "Nothing left to lose." The classic first-death reward. |
-| **Win your first game** | **Cold Read** | start learning to read the mark |
 | **Get busted for the first time** | **Smooth Talker** | you learn to talk your way out |
 | **First 4-5-6 (headcrack)** | **Headcracker** | lean into the jackpot you just felt |
 | **First triple** | **Matchmaker** | a pair-completing cheat |
@@ -58,40 +59,45 @@ Conditions are **tuning placeholders** (exact thresholds to balance later). Grou
 ### Survival depth (reach further into a run)
 | Achievement | Unlocks | Notes |
 |---|---|---|
-| **Reach Night 3** | **High Roller** | you'll need a stronger cheat by now |
+| **Reach Night 3** | **The Finisher** | the marks' bones are turning; turn your best point into a headcrack |
+| **Reach Night 4** | **High Roller** | you'll need a stronger cheat by now |
+| **Survive 3 nights in one run** | **Rabbit's Foot** | a deeper safety net |
 | **Reach Night 5** | **The Sequencer** | a 4-5-6 manufacturer for the deep end |
 | **Reach Night 6** | **Insurance Chit** | cushion the brutal late nights |
-| **Reach the Reckoning (1st time)** | **Greased Palm** | a clutch bribe for the final push |
+| **Reach the Reckoning (1st time)** | **The Spoiler** | you've seen Vito's bones; learn to spoil them |
 | **Reach the Reckoning 3 times** | **Marker Shaver** | chip at the debt itself |
 | **Beat Vito — win a run** | **Set-Bone** | the ultimate control die, fittingly the hardest unlock |
 
 ### Feats (skill / build flexes)
 | Achievement | Unlocks | Notes |
 |---|---|---|
-| **Win all 3 games in one night** (full Heat) | **Streak Charm** | reward the hot hand |
+| **Win 10 games (lifetime)** | **The Nudge** | your hands have learned the pavement *(replaced "Hone any die to Lv3" — honing removed 2026-08)* |
 | **Clear a night's debt from a single game's winnings** | **Point Sharp** | reward one huge win |
-| **Survive a night in which you got busted** | **Cooler Head** | you held your nerve |
 | **Run a full cheat cup (3 loaded dice) in a game** | **Vig Skimmer** | embrace the crooked build |
 | **Re-roll the Fence 3+ times in one night** | **Lucky Cigarette** | a free re-roll for the shop-hunter |
-| **Hone any die to Lv3** | **The Nudge** | reward investing in a die |
-| **Clear a $1,000+ Collection** | **Vito's Favor** | you moved real money |
+| **Win a single pot of $100+ in one game** (fires mid-round) | **High Roller's Clip** | a big-score flex → bigger stakes |
+| **Clear a $250+ Collection** | **Vito's Favor** | you moved real money *(was "$1,000+" — the tuned schedule tops at $290)* |
+| **Win a second run** | **Mulligan Cup** | a powerful re-roll for the practiced |
 
 ### Failures & deaths (lose your way to new toys)
 | Achievement | Unlocks | Notes |
 |---|---|---|
 | **Go broke (lose by running out of money)** | **Loaded Coin** | the 50/50 bailout — thematically perfect |
 | **Get whacked (miss a Collection)** | **Brass Knuckles** | survive one missed Collection next time |
+
+### Deferred: the post-launch unlock wave (2026-08)
+The **Curse category** plus **Greased Palm** and **Cooler Head** sit out the launch catalog (one less concept class on day one — see SPEC §11). Their achievements ship with them, ready-paired:
+
+| Achievement | Unlocks | Notes |
+|---|---|---|
+| **Survive your first night** | **Greased Palm** | reward clearing a Collection; a clutch bribe |
+| **Get busted twice (lifetime)** | **Cooler Head** | you learn to keep your cool |
+| **Get busted 3 times (lifetime)** | **Bloody Knuckles** | you stopped fearing the heat |
 | **Die 3 times (lifetime)** | **All-or-Nothing** | a high-variance swing for the desperate |
 | **Die 5 times (lifetime)** | **Snake Eyes Pact** | bigger swing, bigger risk |
 | **Die 10 times (lifetime)** | **Gambler's Curse** | for players who keep flaming out — lean in |
-| **Get busted 3 times (lifetime)** | **Bloody Knuckles** | you stopped fearing the heat |
 
-### Grind / mastery
-| Achievement | Unlocks | Notes |
-|---|---|---|
-| **Win a single pot of $X in one game** (fires mid-round) | **High Roller's Clip** | a big-score flex → bigger stakes |
-| **Win a second run** (or on a harder setting) | **Mulligan Cup** | a powerful re-roll for the practiced |
-| **Win a full night playing completely clean (no cheats)** | **Hot Hand** | a purist flex (hard, given The Squeeze) |
+*(Retired with the 2026-08 tie-rule change: "Win a full night playing completely clean → The Equalizer" — ties go to the banker permanently now, so there is no old rule to buy back.)*
 
 ---
 

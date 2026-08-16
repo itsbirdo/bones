@@ -1,5 +1,11 @@
 # BONES: Item Catalog Status
 
+> **2026-08 simplification pass (sync the Unity port to spec §11):** honing/levels are **removed**
+> (every item has one fixed proc %), per-item suspicion collapsed to **Light +1% / Heavy +2%**
+> tiers, **The Equalizer is cut** (ties go to the banker permanently), and the **Curse category
+> plus Greased Palm and Cooler Head are deferred** to a post-launch unlock wave. The web build
+> (`web/engine.js`) implements all of this and is the reference.
+
 Bridge document for the dice/charm/favor/trinket build-out (spec §11, issue #2 subtask 3).
 Every §11 item is listed below with its category, the `DieEffect` or `effectTag` it maps to in
 code, and a status:
@@ -49,7 +55,7 @@ in `Assets/Editor/DataBootstrap.cs`; a **BONES > Generate MVP Data** run is requ
 | Headcracker | Charm | `JackpotCharm` | Implemented (original MVP die) |
 | Streak Charm | Charm | `HeatCharm` | Implemented (original MVP die) |
 
-## Curses
+## Curses (DEFERRED — post-launch unlock wave, 2026-08)
 
 | Name | Category | Maps to (DieEffect/effectTag) | Status |
 |---|---|---|---|
@@ -64,8 +70,8 @@ in `Assets/Editor/DataBootstrap.cs`; a **BONES > Generate MVP Data** run is requ
 |---|---|---|---|
 | Lookout | Favor | `suspicion_reduce` | Implemented (original MVP item) |
 | Cold Read | Favor | `reveal_odds` | Needs: UI readout (no mechanical effect) |
-| Greased Palm | Favor | `suspicion_reduce` | Implemented |
-| Cooler Head | Favor | `suspicion_reduce` | Implemented |
+| Greased Palm | Favor | `suspicion_reduce` | Implemented — **DEFERRED to the post-launch wave (2026-08)** |
+| Cooler Head | Favor | `suspicion_reduce` | Implemented — **DEFERRED to the post-launch wave (2026-08)** |
 | Smooth Talker | Favor | `bust_negate` | Needs: bust-negation hook |
 
 ## Trinkets
@@ -86,7 +92,10 @@ in `Assets/Editor/DataBootstrap.cs`; a **BONES > Generate MVP Data** run is requ
 ## Starting unlocks (implemented + balanced to test now)
 
 `snake_killer`, `lucky_six`, `gilded_die`, `streak_charm`, `headcracker`, `shaved_edge`,
-`the_sequencer`, `the_magnet`, `hot_hand`, `greased_palm`, `cooler_head`
+`the_sequencer`, `the_magnet`, `hot_hand`
+
+(Greased Palm and Cooler Head dropped from this testing set — deferred to the post-launch wave.
+The shipping core pool is the 3-item set in ACHIEVEMENTS.md: `shaved_edge`, `gilded_die`, `lookout`.)
 
 All other items are registered in `db.allDice` / `db.allItems` but excluded from `startingUnlocks`;
 they await their named systems and the achievement-unlock work (a separate subtask).

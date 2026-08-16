@@ -212,20 +212,42 @@ namespace Bones.UI
             bool layLow = _layLow != null && _layLow.value;
             var report = game.PlayGame(_stake, layLow);
 
-            // Reveal the banker's throw (the heartbeat).
+            // Reveal the banker's roll (the heartbeat): every natural "nothing" throw plays as a
+            // quick re-roll beat; the decisive final throw gets the full one-die-at-a-time ceremony.
+            var bankerThrows = report.Round.BankerThrows;
             bool done = false;
-            yield return choreographer.RevealBanker(report.Round.Banker, game.Run.cup, () => done = true);
-            while (!done) yield return null;
+            for (int i = 0; i < bankerThrows.Count; i++)
+            {
+                bool final = i == bankerThrows.Count - 1;
+                done = false;
+                yield return choreographer.RevealBanker(bankerThrows[i], game.Run.cup, () => done = true, quick: !final);
+                while (!done) yield return null;
+                if (!final)
+                {
+                    _result.text = "Nothing. Go again.";
+                    yield return new WaitForSeconds(0.35f);
+                }
+            }
             PopLetters(LettersFor(report.Round.Banker.Result, false));
 
-            // If a point was set, the mark counter-rolls.
+            // If a point was set, the mark counter-rolls (his "nothing" throws play quick too).
             if (report.Round.MarkRolled)
             {
                 _result.text = $"Your point: {report.Round.Banker.Result.Value}.  The mark fades it…";
                 yield return new WaitForSeconds(0.5f);
-                done = false;
-                yield return choreographer.RevealMark(report.Round.Mark, () => done = true);
-                while (!done) yield return null;
+                var markThrows = report.Round.MarkThrows;
+                for (int i = 0; i < markThrows.Count; i++)
+                {
+                    bool final = i == markThrows.Count - 1;
+                    done = false;
+                    yield return choreographer.RevealMark(markThrows[i], () => done = true, quick: !final);
+                    while (!done) yield return null;
+                    if (!final)
+                    {
+                        _result.text = "He throws nothing. Again.";
+                        yield return new WaitForSeconds(0.3f);
+                    }
+                }
             }
 
             // Settle: juice + readout.
@@ -537,7 +559,7 @@ namespace Bones.UI
         {
             CeeloKind.Triple => r.Value == 6 ? "SIX-SIX-SIX!" : "TRIPS!",
             CeeloKind.FourFiveSix => "HEADCRACK!",
-            CeeloKind.InstantLoss => "SNAKE EYES!",
+            CeeloKind.InstantLoss => "ONE-TWO-THREE!",
             CeeloKind.Point => asWin ? "PAID!" : $"POINT {r.Value}",
             _ => "",
         };

@@ -4,11 +4,13 @@ namespace Bones.Core
 {
     /// <summary>
     /// Pure money math: Heat multiplier, payout on a win, stake bounds, and collection settlement.
-    /// Mirrors ECONOMY.md (seed $18, min stake $1, Heat = 1 + 0.5 × consecutive wins).
+    /// Mirrors ECONOMY.md (seed $25, min stake $1, Heat = 1 + 0.5 × consecutive wins).
+    /// Seed $25 vs a $15 Night-1 tribute targets ~85% first-night survival for honest cautious
+    /// play (Monte Carlo, 2026-06: ~91% at quarter-bankroll stakes, ~74% at aggressive stakes).
     /// </summary>
     public static class EconomyService
     {
-        public const int SeedBankroll = 18;
+        public const int SeedBankroll = 25;
         public const int MinStake = 1;
         public const double HeatPerWin = 0.5;
 

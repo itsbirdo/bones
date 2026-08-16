@@ -91,48 +91,71 @@ namespace Bones.Core
         private const int MaxRerolls = 32; // re-roll "nothing" until decisive; safety cap
 
         /// <summary>
-        /// Resolve the banker's throw with the player's 3-die cup. Re-rolls non-decisive throws,
-        /// applying each die's effect (gated by its proc chance). Records which cheats fired.
+        /// Resolve the banker's roll as the full throw sequence: zero or more natural "nothing"
+        /// throws followed by exactly one decisive throw (the last element). Every throw is a real
+        /// uniform 3d6 roll (with each die's effect gated by its proc chance), so the choreographer
+        /// can show the re-rolls the spec calls for (§5.1) instead of only ever landing decisive
+        /// hands. Records which cheats fired per throw.
         /// </summary>
-        public static ResolvedThrow ResolveBanker(IRng rng, DieSpec d0, DieSpec d1, DieSpec d2)
+        public static IReadOnlyList<ResolvedThrow> ResolveBankerThrows(IRng rng, DieSpec d0, DieSpec d1, DieSpec d2)
         {
-            var fired = new List<string>(3);
+            var throws = new List<ResolvedThrow>(2);
             for (int attempt = 0; attempt < MaxRerolls; attempt++)
             {
-                fired.Clear();
+                var fired = new List<string>(3);
                 int f0 = RollDie(rng, d0, fired);
                 int f1 = RollDie(rng, d1, fired);
                 int f2 = RollDie(rng, d2, fired);
                 (f0, f1, f2) = ApplyWholeHand(rng, f0, f1, f2, d0, d1, d2, fired);
 
                 var result = CeeloEngine.Evaluate(f0, f1, f2);
+                throws.Add(new ResolvedThrow(f0, f1, f2, result, fired));
                 if (result.IsDecisive)
-                    return new ResolvedThrow(f0, f1, f2, result, fired);
+                    return throws;
             }
             // Degenerate fallback: a guaranteed decisive point.
             var fallback = CeeloEngine.Evaluate(6, 6, 2);
-            return new ResolvedThrow(6, 6, 2, fallback, fired);
+            throws.Add(new ResolvedThrow(6, 6, 2, fallback, Array.Empty<string>()));
+            return throws;
+        }
+
+        /// <summary>The banker's final, decisive throw (the last element of the sequence).</summary>
+        public static ResolvedThrow ResolveBanker(IRng rng, DieSpec d0, DieSpec d1, DieSpec d2)
+        {
+            var throws = ResolveBankerThrows(rng, d0, d1, d2);
+            return throws[throws.Count - 1];
         }
 
         /// <summary>
-        /// Resolve the mark's throw. loadingLevel (0..1) is The Squeeze + opponent loading: the
-        /// higher it is, the more the mark's dice lean high (better points, more instant wins).
+        /// Resolve the mark's roll as the full throw sequence (last element decisive).
+        /// loadingLevel (0..1) is The Squeeze + opponent loading: the higher it is, the more the
+        /// mark's dice lean high (better points, more instant wins).
         /// </summary>
-        public static ResolvedThrow ResolveMark(IRng rng, double loadingLevel)
+        public static IReadOnlyList<ResolvedThrow> ResolveMarkThrows(IRng rng, double loadingLevel)
         {
             var none = Array.Empty<string>();
             bool loaded = loadingLevel > 0 && rng.Chance(loadingLevel);
+            var throws = new List<ResolvedThrow>(2);
             for (int attempt = 0; attempt < MaxRerolls; attempt++)
             {
-                int f0 = loaded ? BiasedHigh(rng) : rng.D6();
-                int f1 = loaded ? BiasedHigh(rng) : rng.D6();
-                int f2 = loaded ? BiasedHigh(rng) : rng.D6();
+                int f0 = loaded ? LoadedFace(rng, loadingLevel) : rng.D6();
+                int f1 = loaded ? LoadedFace(rng, loadingLevel) : rng.D6();
+                int f2 = loaded ? LoadedFace(rng, loadingLevel) : rng.D6();
                 var result = CeeloEngine.Evaluate(f0, f1, f2);
+                throws.Add(new ResolvedThrow(f0, f1, f2, result, none));
                 if (result.IsDecisive)
-                    return new ResolvedThrow(f0, f1, f2, result, none);
+                    return throws;
             }
             var fallback = CeeloEngine.Evaluate(3, 3, 1);
-            return new ResolvedThrow(3, 3, 1, fallback, none);
+            throws.Add(new ResolvedThrow(3, 3, 1, fallback, none));
+            return throws;
+        }
+
+        /// <summary>The mark's final, decisive throw (the last element of the sequence).</summary>
+        public static ResolvedThrow ResolveMark(IRng rng, double loadingLevel)
+        {
+            var throws = ResolveMarkThrows(rng, loadingLevel);
+            return throws[throws.Count - 1];
         }
 
         private static int RollDie(IRng rng, DieSpec die, List<string> fired)
@@ -198,7 +221,19 @@ namespace Bones.Core
             return (f0, f1, target == 1 ? 2 : target);
         }
 
-        /// <summary>A d6 leaning high: ~half the time a guaranteed 4–6, else a fair roll.</summary>
-        private static int BiasedHigh(IRng rng) => rng.Chance(0.5) ? rng.Range(4, 7) : rng.D6();
+        /// <summary>
+        /// One face of a loaded mark's crooked roll. Severity scales with the loading level so The
+        /// Squeeze can actually reach the spec's floor (ECONOMY §5: ~15% banker win at Vito):
+        /// light loading shaves the die toward 4–6, heavy loading pinches it to 5–6, and
+        /// Vito-grade bones come up 6 again and again. (The old 50%-high model capped the banker's
+        /// honest win rate at ~34% even at full loading — far too weak for the designed curve.)
+        /// </summary>
+        private static int LoadedFace(IRng rng, double load)
+        {
+            double r = rng.NextDouble();
+            if (r < load * load) return 6;          // the nastiest bones: a straight 6
+            if (r < load) return rng.Range(5, 7);   // heavy shave: 5 or 6
+            return rng.Range(4, 7);                  // light shave: 4–6
+        }
     }
 }

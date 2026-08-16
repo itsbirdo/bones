@@ -25,6 +25,35 @@ namespace Bones.Tests
         }
 
         [Test]
+        public void Report_CarriesFullThrowSequences_FinalThrowMatchesDecisive()
+        {
+            var rng = new SystemRng(77);
+            var bone = DieSpec.Bone();
+            for (int i = 0; i < 2000; i++)
+            {
+                var report = RoundService.PlayRound(rng, bone, bone, bone, 0.3, TieRule.Push);
+
+                var lastBanker = report.BankerThrows[report.BankerThrows.Count - 1];
+                Assert.AreEqual(report.Banker.Result.Kind, lastBanker.Result.Kind);
+                Assert.AreEqual(report.Banker.Face0, lastBanker.Face0);
+                for (int j = 0; j < report.BankerThrows.Count - 1; j++)
+                    Assert.AreEqual(CeeloKind.Nothing, report.BankerThrows[j].Result.Kind);
+
+                if (report.MarkRolled)
+                {
+                    var lastMark = report.MarkThrows[report.MarkThrows.Count - 1];
+                    Assert.AreEqual(report.Mark.Result.Kind, lastMark.Result.Kind);
+                    for (int j = 0; j < report.MarkThrows.Count - 1; j++)
+                        Assert.AreEqual(CeeloKind.Nothing, report.MarkThrows[j].Result.Kind);
+                }
+                else
+                {
+                    Assert.AreEqual(0, report.MarkThrows.Count, "no mark throws on an outright banker result");
+                }
+            }
+        }
+
+        [Test]
         public void GuaranteedTriple_AlwaysWinsOutright()
         {
             var rng = new SystemRng(5);
