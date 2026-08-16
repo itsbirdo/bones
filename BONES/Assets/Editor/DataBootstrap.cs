@@ -170,19 +170,21 @@ namespace Bones.Editor
             // --- Nights 1–7 (the Squeeze: tie drifts banker -> push -> mark; mark loads harder each
             //     late night; Night 7 is the Reckoning vs Vito — no tribute, Suspicion off). Spec §6.3–6.5,
             //     ECONOMY.md §5. All numbers are tuning placeholders matching the docs. ---
-            // Steeper Squeeze: Night 1 is the only favored night (learn the loop). Night 2 already turns
-            // against you (Mark ties + opponent loading => negative EV on honest dice), so you must start
-            // cheating by Night 2 to keep up with the marker. The edge keeps eroding to ~0.85 at Vito,
-            // where you mostly win only on your own instant 4-5-6 / triples (the ~11% floor). Tuning
-            // placeholders: validate with the Monte Carlo harness.
-            var n1 = MakeNight("Night_1", 1, 20, TieRule.Banker, 0.00f);
-            var n2 = MakeNight("Night_2", 2, 55, TieRule.Mark, 0.22f);
-            var n3 = MakeNight("Night_3", 3, 140, TieRule.Mark, 0.38f);
-            var n4 = MakeNight("Night_4", 4, 375, TieRule.Mark, 0.52f);
-            var n5 = MakeNight("Night_5", 5, 950, TieRule.Mark, 0.64f);
-            var n6 = MakeNight("Night_6", 6, 2400, TieRule.Mark, 0.74f);
+            // Steeper Squeeze: Night 1 is the only favored night (learn the loop; seed $25 vs $15
+            // tribute targets ~85% first-night survival). Night 2 already turns against you (Mark
+            // ties + opponent loading => slightly negative EV on honest dice), so you must start
+            // cheating by Night 2 to keep up with the marker. Loadings are tuned against the
+            // severity-scaled LoadedFace model (Monte Carlo, honest dice, ties->mark):
+            // N2 0.20 => ~40% · N3 0.35 => ~36% · N4 0.50 => ~33% · N5 0.68 => ~28% ·
+            // N6 0.85 => ~21% · Vito 0.95 => ~15% (deciding game bumps toward the ~11% floor).
+            var n1 = MakeNight("Night_1", 1, 15, TieRule.Banker, 0.00f);
+            var n2 = MakeNight("Night_2", 2, 55, TieRule.Mark, 0.20f);
+            var n3 = MakeNight("Night_3", 3, 140, TieRule.Mark, 0.35f);
+            var n4 = MakeNight("Night_4", 4, 375, TieRule.Mark, 0.50f);
+            var n5 = MakeNight("Night_5", 5, 950, TieRule.Mark, 0.68f);
+            var n6 = MakeNight("Night_6", 6, 2400, TieRule.Mark, 0.85f);
             // The Reckoning: no ordinary collection (demand 0); Vito heavily loaded; flagged isReckoning.
-            var n7 = MakeNight("Night_7", 7, 0, TieRule.Mark, 0.85f, true);
+            var n7 = MakeNight("Night_7", 7, 0, TieRule.Mark, 0.95f, true);
 
             var campaign = ScriptableObject.CreateInstance<CampaignConfig>();
             campaign.nights = new[] { n1, n2, n3, n4, n5, n6, n7 };

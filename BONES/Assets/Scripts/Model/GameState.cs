@@ -46,6 +46,7 @@ namespace Bones.Model
         public int gamesPlayed;
         public int consecutiveWins;            // drives Heat = 1 + 0.5 × this
         public bool layingLowThisGame;
+        public double accruedSuspicion;        // builds across the night's crooked games (spec §9.2)
 
         // The Reckoning (spec §6.5): best-of-three vs Vito. Reset each night; only used on the
         // Reckoning night. reckoningWins/Losses track the match score across the 3 games.
@@ -57,6 +58,7 @@ namespace Bones.Model
             gamesPlayed = 0;
             consecutiveWins = 0;
             layingLowThisGame = false;
+            accruedSuspicion = 0.0;
             reckoningWins = 0;
             reckoningLosses = 0;
         }
